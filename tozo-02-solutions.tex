@@ -1,0 +1,114 @@
+\documentclass{article}
+\usepackage{graphicx} % Required for inserting images
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage[T1]{fontenc}  
+\usepackage[utf8]{inputenc}
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+
+\section*{Zadanie 2}
+$\mathbf{\Sigma^*}$ jest równoważne z $\mathbf{(0 \cup 1)^*}$.
+
+Niech $\Sigma = \{0, 1\}$. Podaj wyrażenia regularne, których interpretacja daje języki nad alfabetem $\Sigma$:
+\noindent
+
+\begin{enumerate}[(a)]
+    \item Język $\mathbf{L_a} = \{w \in \Sigma^* \mid w \text{ zaczyna się symbolem } 1 \text{ i kończy się symbolem } 0\}$:
+    $$ \mathbf{1 \Sigma^* 0} $$
+    
+    \item Język $\mathbf{L_b} = \{w \in \Sigma^* \mid w \text{ zawiera przynajmniej trzy symbole } 1\}$:
+    $$ \mathbf{\Sigma^* 1 \Sigma^* 1 \Sigma^* 1 \Sigma^*} $$
+    
+    \item Język $\mathbf{L_c} = \{w \in \Sigma^* \mid w \text{ zawiera podciąg } 0101\}$:
+    $$ \mathbf{\Sigma^* 0101 \Sigma^*} $$
+    
+    \item Język $\mathbf{L_d} = \{w \in \Sigma^* \mid w \text{ ma długość co najmniej } 3 \text{ i jego trzecim symbolem jest } 0\}$:
+    $$ \mathbf{\Sigma \Sigma 0 \Sigma^*} $$
+    
+    \item Język $\mathbf{L_e} = \{w \in \Sigma^* \mid w
+    \parbox[t]{0.8\linewidth}{\strut
+    \text{ zaczyna się } 0 \text{ i ma nieparzystą długość) LUB (w zaczyna się } 1 \text{ i ma parzystą długość})}
+    \strut \}$:
+    $$ \mathbf{0 (\Sigma \Sigma)^* \cup 1 \Sigma (\Sigma \Sigma)^*} $$
+    
+    \item Język $\mathbf{L_f} = \{w \in \Sigma^* \mid w \text{ nie zawiera podciągu } 110\}$:
+    $$ \mathbf{(0 \cup 10)^* (\varepsilon \cup 1 \cup 11)} $$
+    
+    \item Język $\mathbf{L_g} = \{w \in \Sigma^* \mid w \text{ ma długość co najwyżej } 3\}$:
+    $$ \mathbf{\varepsilon \cup \Sigma \cup \Sigma \Sigma \cup \Sigma \Sigma \Sigma} $$
+    
+    \item Język $\mathbf{L_h} = \{w \in \Sigma^* \mid w \text{ jest dowolnym słowem różnym od } 11 \text{ oraz od } 111\}$:
+    \begin{itemize}
+        \item Wyrażeniem regularnym tego języka nie da się zapisać w prosty sposób z użyciem podstawowych operatorów. Jest to język $\mathbf{\Sigma^* \setminus \{11, 111\}}$.
+    \end{itemize}
+    
+    \item Język $\mathbf{L_i} = \{w \in \Sigma^* \mid \text{na każdej nieparzystej pozycji } w \text{ występuje symbol } 1\}$:
+    $$ \mathbf{(1 \Sigma)^* (\varepsilon \cup 1)} $$
+    
+    \item Język $\mathbf{L_j} = \{w \in \Sigma^* \mid w \text{ zawiera co najmniej dwa symbole } 0 \text{ oraz najwyżej jeden symbol } 1\}$:
+    $$ \mathbf{0^* 1 0^+ 0^* \cup 0^* 0^+ 1 0^* \cup 0^+ 0^*} $$
+    
+    \item Język $\mathbf{L_k} = \{\varepsilon, 0\}$:
+    $$ \mathbf{\varepsilon \cup 0} $$
+    
+    \item Język $\mathbf{L_l} = \{w \in \Sigma^* \mid w \text{ zawiera parzystą liczbę } 0 \text{ LUB zawiera dokładnie dwa } 1\}$:
+    $$ \mathbf{(1^* (0 1^* 0 1^* )^* ) \cup (0^* 1 0^* 1 0^* )} $$
+    
+    \item Język $\mathbf{L_m} = \{\text{zbiór pusty}\}$:
+    $$ \mathbf{\emptyset} $$
+    
+    \item Język $\mathbf{L_n} = \{w \in \Sigma^* \mid w \neq \varepsilon\}$ (wszystkie słowa niepuste):
+    $$ \mathbf{\Sigma \Sigma^*} $$
+\end{enumerate}
+
+
+\section*{Zadanie 1}
+Obliczenia Akceptujące Automatu ze Stosem
+
+\begin{enumerate}[(a)]
+    \item Słowo: $00$
+    Obliczenia:
+    $$
+    \begin{aligned}
+    (q_1, 00, \varepsilon) \to (q_2, 00, \$) \to (q_2, 0, 0\$) \to (q_3, 0, 0\$) \to (q_3, \varepsilon, \$) \to (q_4, \varepsilon, \varepsilon) \quad 
+    \end{aligned}
+    $$
+    
+    \item Słowo: $0110$
+    Obliczenia:
+    $$
+    \begin{aligned}
+    (q_1, 0110, \varepsilon) \to (q_2, 0110, \$) \to (q_2, 110, 0\$) \to (q_2, 10, 10\$) \\
+    \to (q_3, 10, 10\$) \to (q_3, 0, 0\$) \to (q_3, \varepsilon, \$) \to (q_4, \varepsilon, \varepsilon) \quad
+    \end{aligned}
+    $$
+    
+    \item Słowo: $110011$
+    Obliczenia:
+    $$
+    \begin{aligned}
+    (q_1, 110011, \varepsilon) \to (q_2, 110011, \$) \to (q_2, 0011, 11\$) \to (q_2, 011, 011\$) \\
+    \to (q_3, 011, 011\$) \to (q_3, 11, 11\$) \to (q_3, 1, 1\$) \to (q_3, \varepsilon, \$) \to (q_4, \varepsilon, \varepsilon) \quad 
+    \end{aligned}
+    $$
+    
+    \item Słowo: $101101$
+    Obliczenia:
+    $$
+    \begin{aligned}
+    (q_1, 101101, \varepsilon) \to (q_2, 101101, \$) \to (q_2, 01101, 1\$) \to (q_2, 1101, 01\$) \to (q_2, 101, 101\$) \\
+    \to (q_3, 101, 101\$) \to (q_3, 01, 01\$) \to (q_3, 1, 1\$) \to (q_3, \varepsilon, \$) \to (q_4, \varepsilon, \varepsilon) \quad 
+    \end{aligned}
+    $$
+\end{enumerate}
+
+\end{document}

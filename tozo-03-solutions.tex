@@ -1,0 +1,82 @@
+\documentclass{article}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[T1]{fontenc}  
+\usepackage[utf8]{inputenc}
+\usepackage[table]{xcolor} 
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+\rowcolors{2}{gray!20}{blue!10}
+
+\maketitle
+
+\newpage
+
+
+% zapisuje symbol w biezacej komorce, zmienia stan i przechodzi w prawo lub lewo 
+
+\section*{ZADANIE 1}
+\begin{enumerate}[a)]
+    \item Czy maszyna Turinga może kiedykolwiek zapisać na taśmie symbol pusty (blank)? \\
+    \textbf{Tak.} Maszyna Turinga może zapisać symbol pusty (blank), bo 'blank' należy do alfabetu taśmowego i może być wynikiem funkcji przejścia.
+    \item Czy alfabet taśmowy ($\Gamma$) może być identyczny z alfabetem wejściowym ($\Sigma$)? \\
+    \textbf{Nie.} Zwykle $\Sigma \subset \Gamma,$ bo $\Gamma$ musi zawierać też symbol pusty (blank), którego nie ma w $\Sigma$.
+    \item Czy głowica może być w tej samej pozycji w dwóch kolejnych krokach? \\
+    \textbf{Zależy od modelu.} Jeśli dopuszcza ruch „bez przesunięcia" (np. S), to tak. Jeśli tylko L i R, to nie.
+    \item Czy maszyna Turinga może mieć tylko jeden stan? \\
+    \textbf{Tak}, może mieć jeden stan, ale wtedy jest bardzo ograniczona – nie może rozróżniać etapów obliczeń.
+\end{enumerate}
+
+\section*{ZADANIE 2}
+
+\begin{tabular}{|c|c|c|c|c|c|}
+    \hline
+    & \textbf{0} & \textbf{1} & \textbf{X} & \textbf{$\sqcup$} & \textbf{\#} \\
+    \hline
+    $q_1$ & $(q_2, x, R)$ & $(q_3, x, R)$ & $(q_R, X, R)$ & $(q_R, \sqcup, R)$ & $(q_8, \#, R)$ \\
+    \hline
+    $q_2$ & $(q_2, 0, R)$ & $(q_2, 1, R)$ & $(q_R, X, R)$ & $(q_R, \sqcup, R)$ & $(q_4, \#, R)$ \\
+    \hline
+    $q_3$ & $(q_3, 0, R)$ & $(q_3, 1, R)$ & $(q_R, X, R)$ & $(q_R, \sqcup, R)$ & $(q_5, \#, R)$ \\
+    \hline
+    $q_4$ & $(q_6, x, L)$ & $(q_R, 1, R)$ & $(q_4, X, R)$ & $(q_R, \sqcup, R)$ & $(q_R, \#, R)$ \\
+    \hline
+    $q_5$ & $(q_R, 0, R)$ & $(q_6, x, L)$ & $(q_5, X, R)$ & $(q_R, \sqcup, R)$ & $(q_R, \#, R)$ \\
+    \hline
+    $q_6$ & $(q_6, 0, L)$ & $(q_6, 1, L)$ & $(q_6, X, L)$ & $(q_R, \sqcup, R)$ & $(q_7, \#, L)$ \\
+    \hline
+    $q_7$ & $(q_7, 0, L)$ & $(q_7, 1, L)$ & $(q_1, X, R)$ & $(q_R, \sqcup, R)$ & $(q_R, \#, R)$ \\
+    \hline
+    $q_8$ & $(q_R, 0, R)$ & $(q_R, 1, R)$ & $(q_5, x, R)$ & $(q_A, \sqcup, R)$ & $(q_R, \#, R)$ \\
+    \hline
+\end{tabular}
+
+\newpage
+
+\section*{ZADANIE 3}
+
+\begin{enumerate}
+    \item[a)] $11$ \\
+    $q_1 11 \vdash x q_3 1 \vdash x 1 q_3 \sqcup \vdash x 1 \sqcup q_R$
+    
+    \item[b)] $1\#1$ \\
+    $q_1 1\#1 \vdash x q_3 \#1 \vdash x\# q_5 1 \vdash x q_6 \# x \vdash q_7 x\# x \vdash x q_1 \# x \vdash x\# q_8 x \vdash x\# x q_8 \sqcup \vdash x\# x \sqcup q_A$
+    
+    \item[c)] $1\#\#1$ \\
+    $q_1 1\#\#1 \vdash x q_3 \#\#1 \vdash x\# q_5 \#1 \vdash x\#\# q_R$
+    
+    \item[d)] $10\#11$ \\
+    $q_1 10\#11 \vdash x q_3 0\#11 \vdash x 0 q_3 \#11 \vdash x 0\# q_5 11 \vdash x 0\# q_6 \# x 1 \vdash x q_7 0\# x 1 \vdash q_7 x 0\# x 1 \vdash x q_1 0\# x 1 \vdash x x q_2 \# x 1 \vdash x x\# q_4 x 1 \vdash x x\# x q_4 1 \vdash x x\# x 1 q_R$
+    
+    \item[e)] $10\#10$ \\
+    $q_1 10\#10 \vdash x q_3 0\#10 \vdash x 0 q_3 \#10 \vdash x 0\# q_5 10 \vdash x 0 q_6 \# x 0 \vdash x q_7 0\# x 0 \vdash q_7 x 0\# x 0 \vdash x q_1 0\# x 0 \vdash x x q_2 \# x 0 \vdash x x\# q_4 x 0 \vdash x x\# x q_4 0 \vdash x x\# q_6 x x \vdash x x q_6 \# x x \vdash x q_7 x \# x x \vdash x x q_1 \# x x \vdash x x\# q_8 x x \vdash x x\# x q_8 x \vdash x x\# x x q_8 \sqcup   \vdash x x\# x x \sqcup q_A$
+\end{enumerate}
+
+
+\end{document}

@@ -1,0 +1,156 @@
+\documentclass{article}
+\usepackage{graphicx} 
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{array}
+\usepackage[T1]{fontenc}  
+\usepackage[utf8]{inputenc}
+\usepackage[table]{xcolor} 
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+\rowcolors{2}{gray!20}{blue!10}
+
+\maketitle
+
+\newpage
+
+\section*{Zadanie 1: Prawda czy Fałsz (Niedeterministyczna Maszyna Turinga)}
+
+Poniższe stwierdzenia dotyczące niedeterministycznej maszyny Turinga ($N$) są oceniane na podstawie formalnych definicji akceptacji i odrzucenia dla NTM.
+
+\subsection*{(a) Jeżeli niedeterministyczna maszyna Turinga $N$ odrzuca słowo $w$, to $N$ nie akceptuje słowa $w$.}
+
+\textbf{Ocena: PRAWDA (P)}
+
+\textbf{Wyjaśnienie:}
+Jeżeli maszyna $N$ odrzuca słowo $w$, oznacza to, że \textbf{wszystkie gałęzie} jej drzewa obliczeń prowadzą do stanu odrzucającego. W konsekwencji, żadna gałąź nie może prowadzić do stanu akceptującego, co jest definicją nieakceptowania słowa.
+
+
+\subsection*{(b) Jeżeli niedeterministyczna maszyna Turinga $N$ nie akceptuje słowa $w$, to $N$ odrzuca słowo $w$.}
+
+\textbf{Ocena: FAŁSZ (F)}
+
+\textbf{Wyjaśnienie:}
+Maszyna, która nie akceptuje słowa, może również \textbf{wpaść w nieskończoną pętlę} na którejś ze ścieżek obliczeń. Ponieważ odrzucenie wymaga, aby \textbf{wszystkie gałęzie} kończyły się w $q_{\text{reject}}$, obecność nieskończonej pętli oznacza, że maszyna nie odrzuca, mimo że nie akceptuje.
+
+
+\subsection*{(c) Jeżeli niedeterministyczna maszyna Turinga $N$ nie odrzuca słowa $w$, to $N$ akceptuje słowo $w$.}
+
+\textbf{Ocena: FAŁSZ (F)}
+
+\textbf{Wyjaśnienie:}
+Warunek "nie odrzuca" oznacza, że istnieje przynajmniej jedna gałąź, która nie prowadzi do $q_{\text{reject}}$. Ta gałąź może jednak prowadzić do \textbf{nieskończonej pętli}, zamiast do stanu akceptującego $q_{\text{accept}}$. Zatem brak odrzucenia nie jest wystarczającym warunkiem do stwierdzenia akceptacji.
+
+\subsection*{Podsumowanie Odpowiedzi}
+\begin{enumerate}
+    \item[(a)] Prawda
+    \item[(b)] Fałsz
+    \item[(c)] Fałsz
+\end{enumerate}
+
+
+\section*{Zadanie 2. Modyfikacja Dowodu: Równoważność NTM i DTM dla Maszyn Rozstrzygających}
+
+\textbf{Wniosek:} Język jest rozstrzygalny wtedy i tylko wtedy, gdy jest rozstrzygany przez pewną niedeterministyczną maszynę Turinga (NTM).
+
+
+\subsection*{1. Kierunek prosty: DTM $\implies$ NTM}
+
+\textbf{Teza:} Jeżeli język $A$ jest rozstrzygalny przez deterministyczną maszynę Turinga (DTM) $M$, to jest rozstrzygany przez niedeterministyczną maszynę Turinga (NTM) $N$.
+
+\textbf{Dowód:}
+Każda maszyna DTM jest szczególnym przypadkiem maszyny NTM, w której dla każdej pary (stan, symbol) funkcja przejścia $\delta$ zwraca dokładnie jeden możliwy ruch.
+Jeśli DTM $M$ rozstrzyga $A$ (zawsze się zatrzymuje), to identyczna maszyna $N$ również rozstrzyga $A$.
+
+
+\subsection*{2. Kierunek odwrotny: NTM $\implies$ DTM (Rozstrzygalność)}
+
+\textbf{Teza:} Jeżeli język $A$ jest rozstrzygany przez NTM $N$, to jest rozstrzygalny przez DTM $D$.
+
+\textbf{Modyfikacja Dowodu Symulacyjnego:}
+
+1.  Konstruujemy deterministyczną maszynę Turinga $D$ z trzema taśmami, która symuluje wszystkie ścieżki obliczeń maszyny $N$. Symulacja odbywa się poprzez \textbf{przeszukiwanie wszerz (BFS)}.
+2.  Ponieważ maszyna $N$ jest maszyną \textbf{rozstrzygającą}, wiemy, że dla każdego słowa wejściowego $w$, jej drzewo obliczeń jest \textbf{skończone} (żadna ścieżka nie wpada w nieskończoną pętlę i każda gałąź kończy się stanem $q_{\text{accept}}$ lub $q_{\text{reject}}$).
+3.  DTM $D$, wykonując przeszukiwanie wszerz:
+    \begin{itemize}
+        \item Sprawdza wszystkie możliwe ścieżki w porządku leksykograficznym (Taśma Adresowa).
+        \item Jeżeli $D$ znajdzie na którejkolwiek ścieżce stan $q_{\text{accept}}$, to \textbf{akceptuje} i się zatrzymuje.
+        \item Jeżeli $D$ przeszuka \textbf{całe, skończone drzewo} obliczeń i nie znajdzie $q_{\text{accept}}$, to \textbf{odrzuca} i się zatrzymuje.
+    \end{itemize}
+4.  Ponieważ drzewo obliczeń jest skończone, $D$ zawsze zakończy przeszukiwanie w skończonym czasie, gwarantując, że $D$ jest również maszyną \textbf{rozstrzygającą}.
+
+\textbf{Wniosek końcowy:} Klasa języków rozstrzygalnych jest taka sama, niezależnie od tego, czy używamy DTM, czy NTM.
+
+
+
+\section*{Zadanie 3: Maszyna $NEXT$ i generowanie słów}
+
+\textit{Maszyna $NEXT$ generuje kolejne słowa nad alfabetem $\Sigma_3 = \{1, 2, 3\}$ w porządku leksykograficznym, zaczynając od pustej taśmy.}
+
+\subsection*{Kolejne Generowane Słowa}
+
+Pusta taśma reprezentuje słowo $\epsilon$ (ciąg zerowej długości). Maszyna $NEXT$ generuje następujące słowa, dodając kolejno '1' w systemie o podstawie 3 i obsługując przeniesienia:
+
+\begin{enumerate}
+    \item $\mathbf{1}$
+    \item $\mathbf{2}$
+    \item $\mathbf{3}$
+    \item $\mathbf{11}$ \quad (Po $3$, następuje przeniesienie: $3 \to 10_{\text{base } 3}$)
+    \item $\mathbf{12}$
+    \item $\mathbf{13}$
+    \item $\mathbf{21}$
+    \item $\mathbf{22}$
+    \item $\mathbf{23}$
+    \item $\mathbf{31}$
+    \item $\mathbf{32}$
+    \item $\mathbf{33}$
+    \item $\mathbf{111}$ \quad (Po $33$, następuje przeniesienie: $33 \to 100_{\text{base } 3}$)
+\end{enumerate}
+
+\subsection*{Przykładowy Ślad Konfiguracji (Skrócony)}
+
+Poniższe kroki ilustrują kluczowe momenty przejścia od $\epsilon$ do $1$ oraz od $3$ do $11$. Przyjmujemy, że $q_{\text{start}}$ to stan początkowy, a $q_{\text{scanL}}$ to stan dodawania/przenoszenia.
+
+\begin{enumerate}
+    \item $\mathbf{q_{\text{start}}}\sqcup \quad \to \quad \dots \quad \to \quad \sqcup \mathbf{q_{\text{scanL}}}\sqcup$ (Maszyna przechodzi na koniec taśmy)
+    \item $\sqcup \mathbf{q_{\text{scanL}}}\sqcup \quad \to \quad \mathbf{q_{\text{finish}}}1\sqcup$ (Generacja $\epsilon \to 1$)
+    \item $\mathbf{q_{\text{finish}}}1\sqcup \quad \to \quad \dots \quad \to \quad \sqcup \mathbf{q_{\text{start}}}2$ (Generacja $1 \to 2$)
+    \item $\sqcup \mathbf{q_{\text{start}}}3 \quad \to \quad \dots \quad \to \quad 3\mathbf{q_{\text{scanL}}}\sqcup$ (Maszyna idzie na koniec słowa $3$)
+    \item $3\mathbf{q_{\text{scanL}}}\sqcup \quad \to \quad 3\mathbf{q_{\text{scanL}}}1$ (Zapis '1', ale nie ma już symboli do inkrementacji)
+    \item $3\mathbf{q_{\text{scanL}}}1 \quad \to \quad \dots \quad \to \quad 11\mathbf{q_{\text{start}}}\sqcup$ (Po zakończeniu przeniesienia $3 \to 11$)
+\end{enumerate}
+
+
+
+
+\section*{Zadanie 7: Rozstrzygalność Języka $A$}
+
+Niech $A$ będzie językiem zawierającym tylko pojedyncze słowo $s$, gdzie $s$ jest definiowane następująco:
+$$s = \begin{cases} 0 & \text{jeżeli życie nigdy nie zostanie znalezione na Marsie.} \\ 1 & \text{jeśli życie zostanie kiedyś znalezione na Marsie.} \end{cases}$$
+Założono, że pytanie o istnienie życia na Marsie ma jednoznaczną odpowiedź TAK lub NIE.
+
+\subsection*{Rozwiązanie}
+
+\textbf{Odpowiedź: TAK, język $A$ jest rozstrzygalny.}
+
+\subsection*{Uzasadnienie}
+
+\begin{enumerate}
+    \item \textbf{Analiza Języka $A$:} Wartość słowa $s$ jest stała, choć nam nieznana. Zgodnie z definicją, język $A$ może zawierać tylko jedno słowo:
+    $$A = \{0\} \quad \text{lub} \quad A = \{1\}$$
+    W obu przypadkach $A$ jest \textbf{językiem skończonym}, ponieważ zawiera tylko jeden, ustalony ciąg ($s$) o stałej długości $|s|=1$.
+    \item \textbf{Rozstrzygalność Języków Skończonych:} Klasa języków rozstrzygalnych jest szersza niż klasa języków skończonych. Wiadomo, że \textbf{każdy język skończony jest rozstrzygalny}.
+    \item \textbf{Konstrukcja Maszyny Decydującej:} Ponieważ język $A$ jest skończony, zawsze można skonstruować deterministyczną maszynę Turinga $M$ (decyder), która go rozstrzygnie.
+    \begin{itemize}
+        \item Jeżeli prawdziwe jest, że $A=\{0\}$, maszyna $M$ akceptuje słowo "0" i odrzuca wszystkie inne słowa.
+        \item Jeżeli prawdziwe jest, że $A=\{1\}$, maszyna $M$ akceptuje słowo "1" i odrzuca wszystkie inne słowa.
+    \end{itemize}
+    Ponieważ wiemy, że musi być prawdziwy jeden z tych dwóch przypadków, definitywnie istnieje maszyna Turinga, która zatrzyma się w skończonym czasie dla każdego wejścia i rozstrzygnie język $A$.
+\end{enumerate}
+
+
+\end{document}
