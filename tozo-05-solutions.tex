@@ -27,7 +27,7 @@ Poniższe stwierdzenia dotyczące niedeterministycznej maszyny Turinga ($N$) są
 \textbf{Ocena: PRAWDA (P)}
 
 \textbf{Wyjaśnienie:}
-Jeżeli maszyna $N$ odrzuca słowo $w$, oznacza to, że \textbf{wszystkie gałęzie} jej drzewa obliczeń prowadzą do stanu odrzucającego. W konsekwencji, żadna gałąź nie może prowadzić do stanu akceptującego, co jest definicją nieakceptowania słowa.
+Jeżeli maszyna $N$ odrzuca słowo $w$, oznacza to, że \textbf{wszystkie gałęzie} jej drzewa obliczeń prowadzą do stanu odrzucającego. W konsekwencji, żadna gałąź nie może prowadzić do stanu akceptującego, co jest definicją nieakceptowania słowa. (Albo prowadzi do odrzucajcego, albo dziala w pętli)
 
 
 \subsection*{(b) Jeżeli niedeterministyczna maszyna Turinga $N$ nie akceptuje słowa $w$, to $N$ odrzuca słowo $w$.}
@@ -93,23 +93,7 @@ Jeśli DTM $M$ rozstrzyga $A$ (zawsze się zatrzymuje), to identyczna maszyna $N
 
 \subsection*{Kolejne Generowane Słowa}
 
-Pusta taśma reprezentuje słowo $\epsilon$ (ciąg zerowej długości). Maszyna $NEXT$ generuje następujące słowa, dodając kolejno '1' w systemie o podstawie 3 i obsługując przeniesienia:
-
-\begin{enumerate}
-    \item $\mathbf{1}$
-    \item $\mathbf{2}$
-    \item $\mathbf{3}$
-    \item $\mathbf{11}$ \quad (Po $3$, następuje przeniesienie: $3 \to 10_{\text{base } 3}$)
-    \item $\mathbf{12}$
-    \item $\mathbf{13}$
-    \item $\mathbf{21}$
-    \item $\mathbf{22}$
-    \item $\mathbf{23}$
-    \item $\mathbf{31}$
-    \item $\mathbf{32}$
-    \item $\mathbf{33}$
-    \item $\mathbf{111}$ \quad (Po $33$, następuje przeniesienie: $33 \to 100_{\text{base } 3}$)
-\end{enumerate}
+Pusta taśma reprezentuje słowo $\epsilon$ (ciąg zerowej długości). Maszyna $NEXT$ generuje następujące słowa, dodając kolejno '1' w systemie o podstawie 3 i obsługując przeniesienia.
 
 \subsection*{Przykładowy Ślad Konfiguracji (Skrócony)}
 
@@ -125,7 +109,81 @@ Poniższe kroki ilustrują kluczowe momenty przejścia od $\epsilon$ do $1$ oraz
 \end{enumerate}
 
 
+\section*{Zadanie 4: Dlaczego Prosty Algorytm Enumeratora Zawodzi?}
 
+\textit{Pytanie dotyczy dowodu twierdzenia o równoważności języków rozpoznawalnych w sensie Turinga i języków wyliczanych przez enumerator. Dlaczego w tym dowodzie nie można użyć poniższego prostego algorytmu $E'$, zakładając, że $M$ jest maszyną Turinga rozpoznającą język $A$, a $s_i$ to kolejne słowa z $\Sigma^*$?}
+
+\subsection*{Prosty Algorytm Enumeratora $E'$}
+$$E' = \text{ "Nie zwracaj uwagi na słowo wejściowe:"}$$
+\begin{enumerate}
+    \item Powtórz następujące instrukcje dla $i=1, 2, 3, \dots$
+    \item Uruchom $M$ dla słowa $s_i.$
+    \item Jeśli $M$ zaakceptuje, to wydrukuj $s_i.$
+\end{enumerate}
+
+\subsection*{Przyczyna Zawodności Algorytmu $E'$}
+
+Algorytm $E'$ zawodzi, ponieważ maszyna Turinga $M$, która jedynie \textbf{rozpoznaje} język, nie jest gwarantowana, że się zatrzyma.
+
+\begin{enumerate}
+    \item \textbf{Maszyna Rozpoznająca vs. Rozstrzygająca:} Maszyna $M$ rozpoznająca język $A$ ma zagwarantowane zatrzymanie tylko dla słów $w \in A$ (akceptacja). Dla słów $w \notin A$, $M$ może albo odrzucić, albo \textbf{wpaść w nieskończoną pętlę}.
+    \item \textbf{Blokada Enumeratora:} Jeśli podczas wykonania kroku 2 maszyna $M$ jest uruchomiona na słowie $s_i$, które \textbf{nie należy} do języka $A$, i wchodzi w nieskończoną pętlę, algorytm $E'$ \textbf{zablokuje się} na tym słowie.
+    \item \textbf{Brak Kompletności:} W rezultacie, enumerator $E'$ nigdy nie przejdzie do sprawdzania kolejnych słów $s_{i+1}, s_{i+2}, \dots$. Jeżeli którekolwiek z tych pominiętych słów należy do języka $A$, $E'$ \textbf{nie wyliczy całego języka} $A$, co jest niezgodne z definicją enumeratora.
+\end{enumerate}
+
+\subsection*{Poprawna Strategia (Przeplatanie)}
+
+Aby uniknąć blokady przez nieskończone pętle, w dowodzie stosuje się strategię \textbf{przeplatania} (ang. \textit{dovetailing}). Polega ona na symulowaniu maszyny $M$ na kolejnych słowach $s_1, s_2, \dots$ w skończonej liczbie kroków $k=1, 2, 3, \dots$.
+
+Poprawny algorytm gwarantuje, że:
+\begin{itemize}
+    \item Każde słowo $s_j \in A$ (które jest akceptowane przez $M$ w pewnej skończonej liczbie kroków $k_j$) zostanie ostatecznie sprawdzone przez maszynę $E$ i wydrukowane, gdy limit kroków $k$ osiągnie $k_j$.
+    \item Symulacja dla słów $s_i \notin A$ (które wpadają w pętlę) nie blokuje procesu, ponieważ w każdej iteracji symulowane jest tylko $k$ kroków, co pozwala na przejście do sprawdzania następnych słów.
+\end{itemize}
+
+
+\section*{Zadanie 5: Enumerator dla $\Sigma^*$}
+
+\textit{Pytanie: Czy istnieje enumerator, który wylicza wszystkie słowa nad danym alfabetem $\Sigma$? Odpowiedź uzasadnij.}
+
+\subsection*{Odpowiedź}
+
+\textbf{Tak, istnieje enumerator wyliczający wszystkie słowa nad dowolnym skończonym alfabetem $\Sigma$ ($\Sigma^*$)}
+
+\subsection*{Uzasadnienie}
+
+\begin{enumerate}
+    \item \textbf{Właściwości Języka:} Język wszystkich słów $\Sigma^*$ jest zbiorem \textbf{nieskończonym}, ale jest to język \textbf{przeliczalny} (rozpoznawalny w sensie Turinga). Oznacza to, że słowa w $\Sigma^*$ można ustawić w kolejce i wyliczać jedno po drugim.
+    \item \textbf{Metoda Generacji (Porządek Standardowy):} Enumerator $E$ może wyliczyć wszystkie słowa, generując je w porządku leksykograficznym (standardowym):
+    \begin{itemize}
+        \item Najpierw generowane są wszystkie słowa o długości $k=0$ (słowo puste $\epsilon$).
+        \item Następnie wszystkie słowa o długości $k=1$.
+        \item Następnie wszystkie słowa o długości $k=2$, itd.
+    \end{itemize}
+    \item \textbf{Gwarancja Zatrzymania:} Ponieważ dla każdego $k$, istnieje \textbf{skończona liczba słów} o długości $k$ (równa $|\Sigma|^k$), enumerator $E$ zawsze zakończy generowanie słów jednej długości i przejdzie do następnej.
+    \item \textbf{Wniosek:} Ponieważ każde słowo $w \in \Sigma^*$ ma skończoną długość $|w|$, enumerator $E$ osiągnie długość $|w|$ w skończonym czasie, a następnie, poruszając się w obrębie tej długości, znajdzie słowo $w$ i je wydrukuje. W ten sposób maszyna $E$ gwarantuje wyliczenie każdego słowa z $\Sigma^*$ w skończonym czasie, a zatem \textbf{istnieje enumerator} dla tego języka.
+\end{enumerate}
+
+
+\section{Zadanie 6}
+\subsection{Kierunek 1 - rozstrzygalny $\longrightarrow$ wyliczalny w porządku standardowym}
+\begin{itemize}
+    \item Jeśli język A jest rozstrzygalny przez maszynę M, to M zawsze się zatrzymuje (akceptuje lub odrzuca) dla każdego słowa
+    \item Enumerator E uruchamia M na kolejnych słowach $\Sigma$* w porządku standardowym ($\epsilon$, $s_1$, $s_2$, ...)
+    \item Ponieważ M gwarantuje zatrzymanie, E nigdy nie utknie. Testowanie każdego słowa kończy się w skończonym czasie, a E drukuje słowo tylko wtedy, gdy M akceptuje.
+\end{itemize}
+Wniosek: E drukuje słowa A w porządku standardowym.
+
+\subsection{Kierunek 2 - wyliczalny w porządku standardowym $\longrightarrow$ rozstrzygalny}
+\begin{itemize}
+    \item Jeśli enumerator E wylicza język A w porządku standardowym (najpierw według długości), to konstruujemy maszynę rozstrzygającą M dla wejścia w
+    \item M uruchamia E i porównuje w z każdym wydrukowanym słowem $s_i$:
+    \begin{itemize}
+        \item Jeśli $s_i$ = w to M akceptuje w i się zatrzymuje
+        \item Jeśli $|s_i|$ $>$ $|w|$ to ponieważ E działa w porządku standardowym, E wyczerpał już wszystkie krótsze słowa oraz wszystkie słowa o długości $|w|$. Skoro w nie zostało wydrukowane, to w $\notin$ A. M odrzuca w i się zatrzymuje.
+    \end{itemize}
+\end{itemize}
+Wniosek: M zawsze zatrzymuje się w skończonym czasie, co oznacza, że język A jest rozstrzygalny.
 
 \section*{Zadanie 7: Rozstrzygalność Języka $A$}
 
@@ -144,13 +202,15 @@ Założono, że pytanie o istnienie życia na Marsie ma jednoznaczną odpowiedź
     $$A = \{0\} \quad \text{lub} \quad A = \{1\}$$
     W obu przypadkach $A$ jest \textbf{językiem skończonym}, ponieważ zawiera tylko jeden, ustalony ciąg ($s$) o stałej długości $|s|=1$.
     \item \textbf{Rozstrzygalność Języków Skończonych:} Klasa języków rozstrzygalnych jest szersza niż klasa języków skończonych. Wiadomo, że \textbf{każdy język skończony jest rozstrzygalny}.
-    \item \textbf{Konstrukcja Maszyny Decydującej:} Ponieważ język $A$ jest skończony, zawsze można skonstruować deterministyczną maszynę Turinga $M$ (decyder), która go rozstrzygnie.
+    \item \textbf{Konstrukcja Maszyny Decydującej:} Ponieważ język $A$ jest skończony, zawsze można skonstruować deterministyczną maszynę Turinga $M$, która go rozstrzygnie.
     \begin{itemize}
         \item Jeżeli prawdziwe jest, że $A=\{0\}$, maszyna $M$ akceptuje słowo "0" i odrzuca wszystkie inne słowa.
         \item Jeżeli prawdziwe jest, że $A=\{1\}$, maszyna $M$ akceptuje słowo "1" i odrzuca wszystkie inne słowa.
     \end{itemize}
     Ponieważ wiemy, że musi być prawdziwy jeden z tych dwóch przypadków, definitywnie istnieje maszyna Turinga, która zatrzyma się w skończonym czasie dla każdego wejścia i rozstrzygnie język $A$.
 \end{enumerate}
+
+
 
 
 \end{document}
