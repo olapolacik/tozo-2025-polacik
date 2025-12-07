@@ -1,0 +1,52 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{graphicx}
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+a. Tak \\
+b. Tak \\
+c. Nie - Elementami języka są pary kodów, musi być automat, słowo \\
+d. Nie - $A_{rex}$ to para R i \textit{w} gdzie R to wyrazenie reg. (B jest automatem skończonym więc nie \\
+e. Nie  \\
+f. Tak L(B) = L(B) \\
+
+\section*{Zadanie 2}
+
+\textbf{Treść zadania:} Rozważmy problem sprawdzenia, czy dany automat skończony i wyrażenie regularne są równoważne. Wyraź ten problem jako język i wykaż, że jest on rozstrzygalny.
+
+\subsection*{Definicja problemu jako język}
+
+Niech $EQ_{\text{DFA,REX}}$ będzie językiem zdefiniowanym następująco:
+$$
+EQ_{\text{DFA,REX}} = \{ \langle A, R \rangle \mid A \text{ jest automatem skończonym, } R \text{ jest wyrażeniem regularnym i } L(A) = L(R) \}
+$$
+
+% \subsection*{Podstawowe definicje}
+% Dla przypomnienia przyjmujemy następujące definicje:
+% \begin{itemize}
+%     \item \textbf{Alfabet} ($\Sigma$) -- skończony zbiór symboli.
+%     \item \textbf{Słowo} ($w$) -- skończony ciąg symboli należących do alfabetu.
+%     \item \textbf{Język} ($L$) -- dowolny zbiór słów nad alfabetem $\Sigma$.
+%     \item \textbf{Kodowanie} -- reprezentacje obiektów (takich jak automaty czy wyrażenia) są traktowane jako słowa nad ustalonym alfabetem.
+% \end{itemize}
+Język $EQ_{DFA,REX}$ jest rozstrzygalny, ponieważ możemy zbudować maszyne Turinga, która zawsze się zatrzyma i poda poprawną odpowiedź TAK lub NIE.
+\begin{itemize}
+    \item Mając na wejściu parę $<A,R>$ maszyna Turinga przekształca wyrażenie regularne na równoważny mu DFA ($A_R$). Jest to zawsze możliwe, ponieważ języki regularne możemy przekształcić: REX $\rightarrow$ NFA $\rightarrow$ DFA
+    \item Następnie maszyna używa algorytmu rozstrzygającego dla problemu równoważności dwóch automatów DFA ($EQ_{DFA}$), aby sprawdzić czy L(A) = L($A_R$)
+    \item Jeżeli L(A) = L($A_R$) to maszyna akceptuje
+    \item Jeżeli L(A) $\neq$ L($A_R$) to maszyna odrzuca
+\end{itemize}
+
+Ponieważ zarówno przekształcenie REX $\rightarrow$ DFA, jak i sprawdzenie równoważności dwóch DFA ($EQ_{DFA}$) są algorytmami, które zawsze się zatrzymują, cała procedura również zawsze sięzatrzymuje. Zatem problem jest rozstrzygalny.
