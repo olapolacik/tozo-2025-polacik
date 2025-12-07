@@ -1,0 +1,182 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+\begin{enumerate}
+    \item Nieskończona przestrzeń przeszukiwania
+    \begin{itemize}
+        \item zmienne $x_1, ..., x_k$ mogą przyjmować dowolne wartości całkowite
+        \item zbiór wszystkich możliwych k-tych liczb całkowitych jest zbiorem nieskończonym
+    \end{itemize}
+    \item Nie ma gwarancji zatrzymania
+
+    Maszyna $M_{bad}$ będzie iterowała w nieskończoność, bo zbiór przypisań jest nieskończony.
+    \begin{itemize}
+        \item Jeśli istnieje pierwiastek (wartość p=0 dla pewnego przypisania), maszyna znajdzie go, zaakceptuje i się zatrzyma. W takim przypadku $M_{bad}$ działa poprawnie.
+        \item Jeśli nie istnieje pierwiastek całkowity (dla każdego przypisania p$\neq$0), maszyna nigdy nie zakończy kroku 1 i 2. Maszyna będzie próbować kolejnych nieskończonych przypisań i zapętli się. W rezultacie maszyna nigdy nie osiągnie stanu odrzucenia z kroku 3.
+    \end{itemize}
+\end{enumerate}
+
+Wniosek:
+
+Poprawna rozstrzygająca maszyna Turinga zawsze musi zatrzymać się dla każdego wejścia i podjąć decyzję (akceptuj lub odrzuć). Ponieważ $M_{bad}$ zapętla się dla tych wejść, dla których wielomian nie ma pierwiastka całkowitego, maszyna ta nie spełnia definicji maszyny rozstrzygającej.
+
+\newpage
+\section{Zadanie 2}
+\subsection{A = $\{$ w $|$ w zawiera jednakową liczbę 0 i 1$\}$}
+\begin{enumerate}
+    \item Pętla - maszyna powtarza swoją czynnośc dopóki nie przekreśli wszystkich symboli 0 i 1. Czyli skanuje taśmę, znajduje pierwsze nieprzekreślone 0 lub 1 i skreśla je.
+    \item Decyzja - akceptuje, jeżeli po zakończeniu pętli wszystkie symbole na taśmie zostały skreślone (sparowane); odrzuca, jeżeli na taśmie pozostał jakikolwiek symbol 0 lub 1.
+\end{enumerate}
+
+\subsection{B = $\{$ w $|$ w zawiera dwa razy większą liczbę 0 niż 1$\}$}
+
+$M_B$ musi sparować każdą 1 z dwoma 0. Aby tego dokonać używamy dwóch rodzajów przekreśleń dla 0.
+\begin{enumerate}
+    \item Pętla - powtarzaj dopóki są nieprzekreślone 1. \\Znajdź nieprzekreśloną 1 i zastąp symbolem z. Znajdź nieprzekreślone 0 i zastąp je x. Znajdź drugie nieprzekreślone 0 i zastąp je y. Odrzuć jeżeli brakuje 0 do skreślenia.
+    \item Decyzja - akceptuje, jeżeli po zakończeniu pętli wszystkie symbole na taśmie są symbolami przekreślenia; odrzuca, jeżeli pozostał jakikolwiek nieprzekreślony symbol 0 lub odrzucono na etapie pętli.
+\end{enumerate}
+
+\subsection{C = $\{$ w $|$ w nie zawiera dwa razy większą liczbę 0 niż 1$\}$}
+
+Język C jest dopełnieniem języka B. Ponieważ B jest rozstrzygalny przez $M_B$, C również jest rozstrzygalny.
+
+\begin{enumerate}
+    \item Pętla - powtarzaj dopóki są nieprzekreślone 1. \\Znajdź nieprzekreśloną 1 i zastąp symbolem z. Znajdź nieprzekreślone 0 i zastąp je x. Znajdź drugie nieprzekreślone 0 i zastąp je y. Odrzuć jeżeli brakuje 0 do skreślenia.
+    \item odwrócenie decyzji - jeżeli symulacja $M_B$ akceptuje to $M_C$ odrzuca; jeżeli $M_B$ odrzuca to $M_C$ akceptuje.
+\end{enumerate}
+
+\newpage
+\section{Zadanie 3}
+P = (Q, $\Sigma$, $\Gamma$, $\delta$, q$_0$, q$_A$, q$_R$)
+
+$\Sigma$ = \{0, 1\}
+
+$\Gamma$ = \{0, 1, X, $\sqcup$\}
+
+Metoda działania:
+\begin{itemize}
+    \item Wybieramy pierwszy neioznaczony symbol 0 lub 1
+    \item Oznaczamy jako X
+    \item Przesuwamy głowicę w prawo szukając opowiedniego symbolu, czyli takiego samego, którego oznaczyliśmy X (jeżeli było to 0 to szukamy 1 i odwrotnie)
+    \item Oznaczamy sparowany symbol X
+    \item Cofamy się na początek słowa
+    \item Powtarzamy czynność. Jeżeli nie znajdziemy symbolu do sparowania to q$_R$.
+\end{itemize}
+
+funkcja przejścia dla słowa 01101:
+
+q$_0$01101 $\vdash$ Xq$_1$1101 $\vdash$ X1q$_1$101 $\vdash$ X11q$_1$01 $\vdash$ X110q$_1$1 $\vdash$ X110Xq$_3$ $\vdash$ X11q$_3$0X $\vdash$ X1q$_3$10X $\vdash$ Xq$_3$110X $\vdash$ q$_0$X110X $\vdash$ XXq$_2$10X $\vdash$ XX1q$_2$0X $\vdash$ XX10q$_2$X $\vdash$ XX1Xq$_3$X $\vdash$ XXq$_3$1XX $\vdash$ Xq$_3$X1XX $\vdash$ q$_0$XXX1X $\vdash$ XXXq$_2$1X $\vdash$ XXX1q$_2$X $\vdash$ q$_R$XXX1X
+
+\section{Zadanie 4}
+\subsection{Suma $ L_1 \cup L_2$}
+Niech $L_1$ i $L_2$ będą językami rozstrzygalnymi, a $M_1$ i $M_2$ będą maszynami Turinga, które je rozstrzygają. Konstruujemy maszynę M rozstrzygającą sumę  $L_1 \cup L_2$.
+\begin{itemize}
+    \item Uruchom $M_1$ na wejściu w. $M_1$ jest maszyną rozstrzygającą, dlatego zawsze się zatrzyma.
+    \item Jeśli $M_1$ akceptuje to akceptuj.
+    \item Jeżeli $M_1$ odrzuca to  uruchom $M_2$ na wejściu w. $M_2$ jest maszyną rozstrzygającą, dlatego zawsze się zatrzyma.
+    \item Jeśli $M_2$ akceptuje to akceptuj. W przeciwnym razie odrzuć.
+\end{itemize}
+
+Maszyna M zawsze się zatrzymuje, ponieważ $M_1$ i $M_2$ zawsze się  zatrzymują.
+
+\subsection{Konkatenacja $L_1L_2$}
+
+Niech $L_1L_2$ będą rozstrzygalne przez $M_1$ i $M_2$, konstuujemy maszynę M rozstrzygającą konkatenację $L_1L_2$
+\begin{itemize}
+    \item dla każdego możliwego podziału słowa wejściowego w na dwie części, w = $w_1w_2$ uruchamiamy $M_1$ dla $w_1$ oraz $M_2$ dla $w_2$
+    \item jeżeli dla jakiegokolwiek podziału w = $w_1w_2$ maszyna $M_1$ akceptuje $w_1$ oraz $M_2$ akceptuje $w_2$ to akceptuj w i zatrzymaj się.
+    \item Jeżeli wszystkie podziały zostały sprawdzone i żaden nie spełnił warunku to odrzuć.
+\end{itemize}
+
+Ponieważ w ma skończoną długość, istnieje tylko skończona liczba sposobów jego podziału. Ponieważ $M_1$ i $M_2$ zawsze się zatrzymują, M zakończy sprawdzanie wszystkich podziałów w skończonym czasie, a zatem zawsze się zatrzyma.
+
+\subsection{Gwiazdka $L_1$*}
+Niech $L_1$ będzie rozstrzygalny przez $M_1$, konstruujemy maszynę M rozstrzygającą gwiazdkę $L_1$*.
+
+\begin{enumerate}
+    \item Sprawdź czy w = $\epsilon$. Jeżeli tak to zaakceptuj, bo $\epsilon \in L$* z definicji.
+    \item dla wszystkich możliwych k $\geq$ 1: gdzie na to długość słowa
+    \begin{itemize}
+    \item Sprawdź wszystkie możliwe podziały słowa w na k niepustych części w = $w_1w_2...w_k$
+    \item dla każdego podziału uruchom M na każdym w
+    \item Jeżeli M akceptuje każdy $w_i$ to zaakceptuj i zatrzymaj się.
+    \end{itemize}
+    \item Jeśli wyczerpiemy wszystkie podziały w (aż do podziału na $|w|$ pojedynczych liter) i nie znaleziono żadnego spełniającego warunku to odrzuć
+\end{enumerate}
+
+Ponieważ w ma skończoną długość $|w|$, istnieje tylko skończona, choć duża, liczba możliwych podziałów. Ponieważ $M_1$ zawsze się zatrzymuje, M sprawdzi wszystkie kombinacje w skończonym czasie i zawsze się zatrzyma.
+
+\subsection{Dopełnienie}
+Niech $L_1$ będzie rozstrzygalny przez $M_1$, konstruujemy maszynę M rozstrzygającą dopełnienie $L_1$.
+\begin{itemize}
+    \item uruchom $M_1$ na wejściu w
+    \item $M_1$ zawsze się zatrzyma, bo jest maszyną rozstrzygającą
+    \item jeżeli $M_1$ akceptuje to M odrzuca; jeżeli $M_1$ odrzuca to M akceptuje
+\end{itemize}
+
+M jest maszyną rozstrzygającą, ponieważ ma identyczny czas zatrzymania jak $M_1$.
+
+\subsection{Przekrój $L_1 \cap L_2$}
+Niech $L_1$ i $L_2$ będą rozstrzygalne przez $M_1$ i $M_2$, konstruujemy maszynę M rozstrzygającą przekrój $L_1 \cap L_2$.
+
+\begin{itemize}
+    \item uruchom $M_1$ na wejściu w
+    \item jeżeli $M_1$ odrzuca to M odrzuca i zatrzymuje się
+    \item jeżeli $M_1$ akceptuje to uruchom $M_2$ na wejściu w
+    \item jeżeli $M_2$ akceptuje to M akceptuje. w przeciwnym wypadku odrzuca.
+\end{itemize}
+
+Maszyna M zawsze się zatrzyma, ponieważ zarówno $M_1$ jak i $M_2$ zawsze się zatrzymują.
+
+\section{Zadanie 5}
+\subsection{Suma $ L_1 \cup L_2$}
+Maszyna M rozpoznająca sumę $ L_1 \cup L_2$ działa na wejściu w w następujący sposób:
+\begin{itemize}
+    \item M symuluje maszyny $M_1$ dla $L_1$ oraz $M_2$ dla $L_2$ na wejściiu w równocześnie przeplatając ich kroki
+    \item jeżeli którakolwiek z maszyn zaakceptuje to M również akceptuje i zatrzymuje się
+\end{itemize}
+
+Dzięki symulacji równoległej, jeśli w należy do sumy, maszyna M znajdzie akceptację i się zatrzyma, nawet jeśli druga maszyna by się zapętliła.
+
+\subsection{Konkatenacja $L_1L_2$}
+Maszyna M rozpoznająca $L_1L_2$ musi sprawdzić wszystkie możliwe podziały w=$w_1w_2$
+\begin{itemize}
+    \item maszyna M przegląda w pętli kolejno wszystkie możliwe podziały w
+    \item dla każdego podziału, maszyna M uruchamia równoległe $M_1$ na $w_1$ oraz $M_2$ na $w_2$.
+    \item Jeśli dla jakiegoś podziału $M_1$ akceptuje $w_1$ ORAZ $M_2$ akceptuje $w_2$ to M akceptuje i zatrzymuje się
+\end{itemize}
+
+Symulacja równoległa jest kluczowa, aby uniknąć utknięcia na niepoprawnym podziale, który powodowałby zapętlenie $M_1$ lub $M_2$.
+
+\subsection{Gwiazdka $L_1$*}
+Maszyna M rozpoznająca $L_1$* jest rozszerzeniem konkatenacji
+\begin{itemize}
+    \item Maszyna M generuje w pętli wszystkie możliwe podziały w na k $\geq$ 1 części (w = $w_1w_2...w_k$)
+    \item dla każdej sekwencji $w_1,...,w_k$ M uruchami $M_1$ równolegle na wszystkich częściach $w_i$
+    \item jeśli dla jakiejś sekwencji $M_1$ akceptuje każde $w_i$, M akceptuje i zatrzymuje się.
+\end{itemize}
+
+\subsection{Przekrój $L_1 \cap L_2$}
+Maszyna M rozpoznająca przekrój $L_1 \cap L_2$ działa na wejściu w:
+\begin{itemize}
+    \item M symuluje $M_1$ na w i $M_2$ na w równolegle (przeplatając kroki)
+    \item jeśli $M_1$ akceptuje ORAZ $M_2$ akceptuje to M również akceptuje i zatrzymuje się
+\end{itemize}
+
+Obie akceptacje są wymagane. Symulacja równoległa zapewnia, że M znajdzie obie akceptacje w skończonym czasie, jeśli w należy do obu języków.
+
+
+\end{document}
