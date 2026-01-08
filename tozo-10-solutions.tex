@@ -1,0 +1,85 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+
+\title{Teoria obliczeń i złożoność obliczeniowa \\ Rozwiązania zadań z listy nr 10}
+\author{Aleksandra Połacik}
+\date{Październik 2025}
+
+\begin{document}
+
+\maketitle
+
+\section*{Zadanie 1 (Problem 5.3)}
+Celem jest znalezienie dopasowania w egzemplarzu problemu odpowiedniości Posta dla zestawu kostek:
+$d_1 = [\frac{ab}{abab}], d_2 = [\frac{b}{a}], d_3 = [\frac{aba}{b}], d_4 = [\frac{aa}{a}]$.
+
+\textbf{Rozwiązanie:}
+Ciąg indeksów $(1, 2, 3, 1, 2, 4)$ stanowi dopasowanie, ponieważ:
+\begin{itemize}
+    \item \textbf{Góra:} $ab \cdot b \cdot aba \cdot ab \cdot b \cdot aa = \text{abbabaabbaa}$
+    \item \textbf{Dół:} $abab \cdot a \cdot b \cdot abab \cdot a \cdot a = \text{abbabaabbaa}$
+\end{itemize}
+Złączenia są identyczne, co kończy zadanie.
+
+\section*{Zadanie 2 (Problem 5.17)}
+W alfabecie unarnym $\Sigma=\{1\}$, każdą kostkę można opisać jako $(g_i, d_i)$, gdzie $g_i$ i $d_i$ to liczby jedynek.
+Dopasowanie istnieje wtedy i tylko wtedy, gdy $\sum g_{i_k} = \sum d_{i_k}$, co jest równoważne $\sum (g_{i_k} - d_{i_k}) = 0$.
+
+\textbf{Algorytm rozstrzygający:}
+1. Jeśli istnieje kostka $i$ taka, że $g_i = d_i$, zaakceptuj.
+2. Jeśli istnieją kostki $j, k$ takie, że $g_j > d_j$ oraz $g_k < d_k$, zaakceptuj.
+3. W przeciwnym razie odrzuć.
+Problem jest rozstrzygalny, gdyż powyższa procedura zawsze kończy pracę.
+
+\section*{Zadanie 3 (Problem 5.1)}
+\textbf{Teza:} Język $EQ_{CFG}$ jest nierozstrzygalny.
+\textbf{Dowód:} Redukujemy nierozstrzygalny język $ALL_{CFG}$ do $EQ_{CFG}$.
+Gdyby istniała maszyna $R$ rozstrzygająca $EQ_{CFG}$, moglibyśmy rozstrzygnąć $ALL_{CFG}$ dla gramatyki $G$, sprawdzając parę $\langle G, G_{all} \rangle$, gdzie $L(G_{all}) = \Sigma^*$. Jest to sprzeczne z nierozstrzygalnością $ALL_{CFG}$.
+
+\section*{Zadanie 4}
+Z definicji redukcji $A \le_m B$ istnieje funkcja obliczalna $f$ taka, że $w \in A \iff f(w) \in B$.
+Zgodnie z zasadą kontrapozycji i definicją dopełnienia:
+$w \notin A \iff f(w) \notin B$ co oznacza $w \in \overline{A} \iff f(w) \in \overline{B}$.
+Zatem $A \le_m B \iff \overline{A} \le_m \overline{B}$.
+
+\section*{Zadanie 5 (Problem 5.4)}
+\textbf{Odpowiedź: Nie}.
+Redukcja $A \le_m B$ wymaga jedynie, aby $f$ była obliczalna. Jeśli $B$ jest regularny (np. $B=\{1\}$), a $A$ jest językiem bezkontekstowym nieregularnym, możemy zdefiniować $f(w) = 1$ jeśli $w \in A$ i $f(w) = 0$ w p.p. Taka funkcja jest obliczalna przez maszynę Turinga, mimo że $A$ nie jest regularny.
+
+\section*{Zadanie 6 (Problem 4.5)}
+Język $\overline{E_{TM}} = \{ \langle M \rangle \mid L(M) \neq \emptyset \}$ jest rozpoznawalny.
+Maszyna rozpoznająca dla wejścia $\langle M \rangle$ symuluje $M$ na wszystkich możliwych słowach $s_1, s_2, \dots$ stosując metodę przeplotu (ang. \textit{dovetailing}): w kroku $i$ wykonuje $i$ kroków na pierwszych $i$ słowach. Jeśli $M$ zaakceptuje jakiekolwiek słowo, maszyna akceptuje $\langle M \rangle$.
+
+\section*{Zadanie 7 (Problem 5.5)}
+\textbf{Teza:} $A_{TM} \not\le_m E_{TM}$.
+\textbf{Dowód nie wprost:} Załóżmy, że $A_{TM} \le_m E_{TM}$. Wtedy z Zadania 4 wynika $\overline{A_{TM}} \le_m \overline{E_{TM}}$.
+Jednak $\overline{E_{TM}}$ jest rozpoznawalny (Zadanie 6), a klasa języków rozpoznawalnych jest zamknięta na redukcje. Oznaczałoby to, że $\overline{A_{TM}}$ jest rozpoznawalny, co jest nieprawdą.
+
+\section*{Zadanie 8 (Problem 5.6)}
+\textbf{Teza:} Relacja $\le_m$ jest przechodnia.
+\textbf{Dowód:} Jeśli $A \le_m B$ przez funkcję $f$ i $B \le_m C$ przez funkcję $g$, to $x \in A \iff f(x) \in B$ oraz $y \in B \iff g(y) \in C$.
+Złożenie $h(x) = g(f(x))$ jest funkcją obliczalną, a $x \in A \iff h(x) \in C$, zatem $A \le_m C$.
+
+\section*{Zadanie 9 (Problem 5.7)}
+Jeśli $A$ jest rozpoznawalny i $A \le_m \overline{A}$, to z Zadania 4 wynika $\overline{A} \le_m A$.
+Z Twierdzenia 5.28  wynika, że skoro $A$ jest rozpoznawalny, to $\overline{A}$ również.
+Język, który jest zarówno rozpoznawalny, jak i jego dopełnienie jest rozpoznawalne, musi być rozstrzygalny.
+
+\section*{Zadanie 10 (Problem 5.22)}
+$(\Rightarrow)$ Jeśli $A$ jest rozpoznawalny przez maszynę $M_A$, to funkcja $f(w) = \langle M_A, w \rangle$ jest redukcją do $A_{TM}$.
+$(\Leftarrow)$ Ponieważ $A_{TM}$ jest rozpoznawalny, a klasa ta jest zamknięta na redukcje , język $A$ również musi być rozpoznawalny.
+
+\section*{Zadanie 11 (Problem 5.23)}
+$(\Leftarrow)$ Język $0^*1^*$ jest regularny, więc rozstrzygalny. Jeśli $A \le_m 0^*1^*$, to $A$ jest rozstrzygalny na mocy Twierdzenia 5.22.
+$(\Rightarrow)$ Jeśli $A$ jest rozstrzygalny, funkcja $f(w)$ uruchamia maszynę decydującą: zwraca $01$ (akceptacja) lub $10$ (odrzucenie). Obie wartości należą lub nie do $0^*1^*$, co stanowi poprawną redukcję.
+
+\section*{Zadanie 12}
+Skoro $\emptyset \neq B \neq \Sigma^*$, istnieją słowa $b_{tak} \in B$ oraz $b_{nie} \notin B$.
+Dla rozstrzygalnego $A$, funkcja redukująca $f(w)$ sprawdza czy $w \in A$. Jeśli tak, zwraca $b_{tak}$, w przeciwnym razie $b_{nie}$. Funkcja ta jest obliczalna, więc $A \le_m B$.
+
+\end{document}
