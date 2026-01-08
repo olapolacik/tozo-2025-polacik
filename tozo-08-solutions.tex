@@ -1,0 +1,111 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+
+\begin{enumerate}
+    \item Czy f jest różnowartościowa?\\
+    Nie. Ponieważ $f(1) = 6$ oraz $f(3) = 6$, a więc różne argumenty mają tę samą wartość. Zatem $f$ nie jest funkcją różnowartościową.
+    \item Czy $f$ jest ,,na''?\\
+    Nie. Obraz funkcji $f$ wynosi
+    \[
+    f(X) = \{6,7\},
+    \]
+    co nie pokrywa całego zbioru $Y$.
+    Brakuje wartości 8, 9 i 10.
+    Zatem $f$ nie jest surjekcją.
+    \item Czy $f$ jest wzajemnie jednoznaczna?\\
+    Nie. Ponieważ $f$ nie jest ani różnowartościowa, ani ,,na'', nie może być bijekcją.
+
+    \item Czy $g$ jest różnowartościowa?\\
+    Tak. Wszystkie wartości obrazu są różne:
+    \[
+    g(X)=\{10,9,8,7,6\}.
+    \]
+    Dla każdych $n_1 \neq n_2$ mamy $g(n_1) \neq g(n_2)$.
+    Zatem $g$ jest funkcją różnowartościową.
+
+    \item Czy $g$ jest ,,na''?\\
+    Tak. Obraz funkcji $g$ pokrywa cały zbiór $Y$:
+    \[
+    g(X)=\{6,7,8,9,10\} = Y.
+    \]
+    Zatem $g$ jest surjekcją.
+
+    \item Czy $g$ jest wzajemnie jednoznaczna?\\
+    Tak. Funkcja $g$ jest jednocześnie różnowartościowa i ,,na'', więc jest bijekcją.
+
+\end{enumerate}
+
+
+\section{Zadanie 2}
+Niech \(B\) będzie zbiorem wszystkich nieskończonych ciągów nad alfabetem \(\{0,1\}\), tzn.
+\[
+B=\{\,b=(b_0,b_1,b_2,\dots)\ :\ b_i\in\{0,1\}\ \text{dla każdego }i\ge0\,\}.
+\]
+Udowodnimy, że \(B\) jest nieprzeliczalny metodą diagonalizacji Cantora.
+
+Załóżmy wprost, że \(B\) jest przeliczalny. Wówczas można wypisać jego elementy w ciągu
+\[
+b^{(0)}, b^{(1)}, b^{(2)}, \dots
+\]
+gdzie każdy \(b^{(n)}=(b^{(n)}_0,b^{(n)}_1,b^{(n)}_2,\dots)\in B\).
+Zdefiniujmy nowy ciąg \(c=(c_0,c_1,c_2,\dots)\in\{0,1\}^\mathbb{N}\) przez regułę diagonalną
+\[
+c_i = 1 - b^{(i)}_i \qquad\text{(czyli zamieniamy 0 na 1 i 1 na 0).}
+\]
+Dla każdego \(i\) mamy \(c_i \neq b^{(i)}_i\), stąd \(c\) różni się od \(b^{(i)}\) co najmniej w pozycji \(i\). To pokazuje, że \(c\) nie występuje w wypisanym ciągu \(b^{(0)},b^{(1)},\dots\), sprzeczność z założeniem, że lista zawiera wszystkie elementy \(B\).
+
+Wniosek: \(B\) jest nieprzeliczalny.
+
+\section{Zadanie 3}
+Niech
+\[
+T=\{\,(i,j,k)\ :\ i,j,k\in\mathbb{N}\,\}.
+\]
+Pokażemy, że \(T\) jest przeliczalny.
+
+Wystarczy wykazać bijekcję (lub surjekcję z \(\mathbb{N}\) na \(T\)) między \(\mathbb{N}\) a \(\mathbb{N}^3\). Wiemy standardowo, że \(\mathbb{N}^2\) jest przeliczalny np. dzięki funkcji parującej Cantora
+\[
+\pi(a,b)=\frac{(a+b)(a+b+1)}{2}+b,
+\]
+która jest bijekcją \(\mathbb{N}^2\to\mathbb{N}\). Wtedy można złożyć tę funkcję, aby uzyskać bijekcję dla trójek:
+\[
+\Phi(i,j,k)=\pi\big(\pi(i,j),\,k\big).
+\]
+Funkcja \(\Phi:\mathbb{N}^3\to\mathbb{N}\) jest bijekcją (skojarzenie dwóch pierwszych współrzędnych poprzez \(\pi\), a następnie spakowanie wyniku z trzecią współrzędną). Z tego wynika, że \(\mathbb{N}^3\) jest przeliczalny, a więc \(T\) jest przeliczalny.
+
+(Zamiast podawać jawnej funkcji \(\Phi\) można też uzasadnić przeliczalność konstruktywnie: ponieważ \(\mathbb{N}^2\) da się wypisać w jednym ciągu, to dla każdej pary \((i,j)\) wypisujemy kolejne \(k\in\mathbb{N}\); otrzymujemy enumerację wszystkich trójek.)
+
+\section{Zadanie 4}
+Niech relacja ``równoliczności'' \(\sim\) na klasie zbiorów (rozważamy tu zbiory dowolnej wielkości) będzie zdefiniowana w następujący sposób:
+\[
+A\sim B \quad\Longleftrightarrow\quad \text{istnieje bijekcja } f:A\to B.
+\]
+Pokażemy, że \(\sim\) jest relacją równoważności, tzn. spełnia trzy własności: refleksywność, symetrię i przechodniość.
+
+\begin{itemize}
+\item \textbf{Refleksywność.} Dla dowolnego zbioru \(A\) identyczność \(\mathrm{id}_A:A\to A\), \(\mathrm{id}_A(x)=x\), jest bijekcją. Stąd \(A\sim A\).
+
+\item \textbf{Symetria.} Jeśli \(A\sim B\), to istnieje bijekcja \(f:A\to B\). Funkcja odwrotna \(f^{-1}:B\to A\) też jest bijekcją, więc \(B\sim A\).
+
+\item \textbf{Przechodniość.} Jeśli \(A\sim B\) i \(B\sim C\), to istnieją bijekcje \(f:A\to B\) i \(g:B\to C\). Złożenie \(g\circ f:A\to C\) jest bijekcją, zatem \(A\sim C\).
+\end{itemize}
+
+Wszystkie trzy warunki spełnione $\Rightarrow$ \(\sim\) jest relacją równoważności.
+
+
+
+\end{document}
