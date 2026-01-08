@@ -1,0 +1,416 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+Język
+\[
+\mathrm{EQ_{CFG}}=\{\langle G_1,G_2\rangle sa CFG \mid L(G_1)=L(G_2)\}
+\]
+jest co-rozpoznawalny.
+
+
+Aby wykazać, że $\mathrm{EQ_{CFG}}$ jest co-rozpoznawalny, musimy wykazać, że jego dopełnienie $\overline{\mathrm{EQ_{CFG}}}$ (problem Nierówności Języków) jest rozpoznawalny w sensie Turinga.
+
+\[
+\overline{\mathrm{EQ_{CFG}}}=\{\langle G_1,G_2\rangle \mid L(G_1)\neq L(G_2)\}.
+\]
+
+Jeśli $L(G_1) \neq L(G_2)$, to musi istnieć co najmniej jedno słowo $w$, które należy do jednego języka, ale nie do drugiego.
+
+Maszyna Turinga $M$ (rozpoznająca $\overline{\mathrm{EQ_{CFG}}}$):
+
+\begin{enumerate}
+    \item Generowanie słów - maszyna $M$ generuje w nieskończonej pętli wszystkie możliwe słowa $w \in \Sigma^*$ w kolejności rosnącej długości (np. $\epsilon, 0, 1, 00, 01, \dots$).
+
+    \item Testowanie Przynależności - dla każdego wygenerowanego słowa $w$, $M$ sprawdza:
+    \begin{itemize}
+        \item Czy $w \in L(G_1)$?
+        \item Czy $w \in L(G_2)$?
+    \end{itemize}
+    \quad Możemy to zrobić, ponieważ problem $A_{CFG}$ jest rozstrzygalny.
+
+    \item Decyzja o Nierówności:
+    \begin{itemize}
+        \item Jeżeli wyniki obu testów są różne, to $w$ jest świadkiem nierówności. Maszyna $M$ AKCEPTUJE $\langle G_1,G_2\rangle$ i zatrzymuje się.
+        \item W przeciwnym razie ($L(G_1)$ i $L(G_2)$ dają ten sam wynik dla $w$), maszyna $M$ przechodzi do następnego słowa w enumeracji.
+    \end{itemize}
+\end{enumerate}
+
+\textbf{Wniosek:}
+\begin{itemize}
+    \item Jeśli $L(G_1) \neq L(G_2)$, maszyna $M$ w końcu natrafi na słowo $w$ rozróżniające języki, zaakceptuje i się zatrzyma.
+    \item Jeśli $L(G_1) = L(G_2)$, maszyna $M$ nigdy nie znajdzie różnicy i będzie kontynuować pracę w nieskończoność.
+\end{itemize}
+Ponieważ $M$ akceptuje i zatrzymuje się dla wszystkich wejść w $\overline{\mathrm{EQ_{CFG}}}$, dowodzi to, że $\overline{\mathrm{EQ_{CFG}}}$ jest rozpoznawalny. Zatem $\mathrm{EQ_{CFG}}$ jest co-rozpoznawalny.
+
+\subsection*{Rola Postaci Normalnej Chomsky'ego (CNF)}
+
+**Zastosowanie CNF** \\
+CNF jest przydatna, ponieważ gwarantuje, że Test Przynależności (krok 2) zawsze zakończy się w skończonym czasie.
+
+**Ograniczenie CNF** \\
+CNF nie jest w stanie rozwiązać głównego problemu: konieczności przeszukania nieskończonej liczby słów. To dlatego $EQ_{CFG}$ pozostaje problemem nierozstrzygalnym.
+
+
+\section{Zadanie 2}
+Niech $B = \{\langle M, w \rangle \mid M$ jest dwutaśmową MT\},
+
+która zapisuje niepusty symbol na swojej drugiej taśmie, gdy działa na  w. Wykaż, że $A_{TM}$ redukuje się do $B$.
+
+Załóżmy przez sprzeczność, że Maszyna Turinga $R$ rozstrzyga $B$. Następnie skonstruujemy Maszynę Turinga $S$, która używa $R$ do rozstrzygania $A_{TM}$.
+
+Konstrukcja Maszyny $S$ (Decydent dla $A_{TM}$):
+
+$$S = \text{"Na wejściu } \langle M, w \rangle \text{ (gdzie } M \text{ jest MT, a } w \text{ jest słowem wejściowym):''}$$
+
+\begin{enumerate}
+    \item Konstrukcja Maszyny $T$ - użyj $M$ do skonstruowania następującej dwutaśmowej Maszyny Turinga $T$.
+    \begin{quote}
+    $T = \text{"Na wejściu } x$:
+    \begin{enumerate}
+        \item Symuluj $M$ na $x$ używając pierwszej taśmy.
+        \item Jeżeli symulacja wykaże, że $M$ akceptuje, zapisz niepusty symbol na drugiej taśmie.
+    \end{enumerate}
+    \end{quote}
+
+    \item Uruchomienie $R$ - uruchom $R$ na $\langle T, w \rangle$, aby określić, czy $T$ na wejściu $w$ zapisuje niepusty symbol na swojej drugiej taśmie.
+
+    \item Decyzja $S$:
+    \begin{itemize}
+        \item Jeśli $R$ akceptuje, to $M$ akceptuje $w$, więc akceptuj.
+        \item W przeciwnym razie, odrzuć
+    \end{itemize}
+\end{enumerate}
+
+\section{Zadanie 3}
+Niech C = $\{\langle M \rangle \mid \text{M  jest dwutaśmową MT}\}$,
+która zapisuje niepusty symbol na swojej drugiej taśmie, gdy działa na pewnym wejściu. Wykaż, że $A_{TM}$ redukuje się do $C$.
+
+Załóżmy przez sprzeczność, że Maszyna Turinga $R$ rozstrzyga $C$. Skonstruuj Maszynę Turinga $S$, która używa $R$ do rozstrzygania $A_{TM}$.
+
+$$S = \text{"Na wejściu } \langle M, w \rangle \text{ (gdzie } M \text{ jest MT, a } w \text{ jest słowem wejściowym):''}$$
+
+\begin{enumerate}
+    \item Konstrukcja Maszyny $T_w$ - użyj $M$ i $w$ do skonstruowania następującej dwutaśmowej Maszyny Turinga $T_w$.
+    \begin{quote}
+    $T_w = \text{"Na dowolnym wejściu}$:
+    \begin{enumerate}
+        \item Symuluj $M$ na $w$ używając pierwszej taśmy.
+        \item Jeżeli symulacja wykaże, że $M$ akceptuje, zapisz niepusty symbol na drugiej taśmie.
+    \end{enumerate}
+    \end{quote}
+
+    \item Uruchomienie $R$ - uruchom $R$ na $\langle T_w \rangle$, aby określić, czy $T_w$ kiedykolwiek zapisuje niepusty symbol na swojej drugiej taśmie.
+
+    \item Decyzja $S$:
+    \begin{itemize}
+        \item Jeśli $R$ akceptuje, to $M$ akceptuje $w$, więc akceptuj
+        \item W przeciwnym razie, odrzuć.
+    \end{itemize}
+\end{enumerate}
+
+\section{Zadanie 4}
+Twierdzenie Rice'a mówi, że każda nietrywialna własność języka rozpoznawalnego przez Maszynę Turinga (MT) jest nierozstrzygalna.
+
+
+Oba warunki są potrzebne do dowodu, który opiera się na redukcji z problemu $A_{TM}$ (problem akceptacji, który jest nierozstrzygalny).
+
+\subsection*{1) WARUNEK 1 ($P$ nie jest pusta)}
+
+\textbf{Warunek:} Musi istnieć przynajmniej jedna Maszyna Turinga ($M_{TAK}$), której język $L(M_{TAK})$ posiada własność $P$.
+
+\textbf{Uzasadnienie:}
+Gdyby ten warunek nie był spełniony, to własność $P$ byłaby \textbf{trywialnie fałszywa} ($P = \emptyset$). Żaden język nie miałby tej własności.
+W dowodzie Rice'a budujemy maszynę $S$, która ma rozstrzygać $A_{TM}$. Jeśli $M$ akceptuje $w$, maszyna $S$ musi zredukować to do przypadku, w którym nowy automat $T$ posiada własność $P$.
+
+* Jeśli $P = \emptyset$, nie ma maszyny, do której moglibyśmy zredukować przypadek akceptacji. Nie mamy "celu" dla pozytywnej odpowiedzi.\\
+* Język problemu $L_P$ byłby $\emptyset$, co jest językiem rozstrzygalnym.
+
+\subsection*{2) WARUNEK 2 ($P$ nie jest zbiorem wszystkich języków)}
+
+\textbf{Warunek:} Musi istnieć przynajmniej jedna Maszyna Turinga ($M_{NIE}$), której język $L(M_{NIE})$ nie posiada własności $P$.
+
+\textbf{Uzasadnienie:}
+Gdyby ten warunek nie był spełniony, to własność $P$ byłaby trywialnie prawdziwa ($P = \mathrm{RE}$, zbiór wszystkich języków rozpoznawalnych). Każdy język miałby tę własność.
+
+W dowodzie Rice'a, jeśli $M$ nie akceptuje $w$, maszyna $S$ musi zredukować to do przypadku, w którym nowy automat $T$ nie posiada własności $P$.
+\begin{itemize}
+    \item Jeśli $P = \mathrm{RE}$, każda maszyna $T$ zawsze posiada własność $P$. Nie jesteśmy w stanie zredukować przypadku braku akceptacji do przypadku braku własności.
+    \item Język problemu $L_P$ byłby $\Sigma^*$ (cały alfabet), co jest językiem rozstrzygalnym
+\end{itemize}
+
+
+\textbf{Podsumowanie:} Jeśli własność jest trywialna (obejmuje $0\%$ lub $100\%$ języków), odpowiedni problem jest łatwy (rozstrzygalny). Rice stwierdza, że cała trudność bierze się właśnie z konieczności podziału i rozróżnienia (nietrywialności) w tym nieskończonym zbiorze.
+
+\section{Zadanie 5}
+\subsection*{(a) $INF_{TM} = \{\langle M \rangle \mid L(M) \text{ jest językiem nieskończonym}\}$}
+
+\begin{itemize}
+    \item \textbf{Własność jest spełniona:} Istnieje MT $M_1$, która akceptuje język nieskończony. Np. $M_1$ akceptuje $\Sigma^*$ (wszystkie słowa). Język $\Sigma^*$ jest nieskończony.
+    \item \textbf{Własność nie jest spełniona:} Istnieje MT $M_2$, która akceptuje język skończony. Np. $M_2$ akceptuje $\emptyset$ (język pusty) lub $\{0, 1\}$ (język zawierający tylko dwa słowa).
+\end{itemize}
+Własność jest nietrywialna. Z Twierdzenia Rice’a, $INF_{TM}$ jest nierozstrzygalny.
+
+\subsection*{(b) $L_B = \{\langle M \rangle \mid 1011 \in L(M)\}$}
+
+\begin{itemize}
+    \item \textbf{Własność jest spełniona:} Istnieje MT $M_1$, która akceptuje wszystkie słowa, w tym $1011$. Np. $M_1$ akceptuje $\Sigma^*$.
+    \item \textbf{Własność nie jest spełniona:} Istnieje MT $M_2$, która akceptuje język pusty $L(M_2)=\emptyset$, który nie zawiera słowa $1011$.
+\end{itemize}
+Własność jest nietrywialna. Z Twierdzenia Rice’a, $L_B$ jest nierozstrzygalny.
+
+\subsection*{(c) $ALL_{TM} = \{\langle M \rangle \mid L(M) = \Sigma^*\}$}
+
+\begin{itemize}
+    \item \textbf{Własność jest spełniona:} Istnieje MT $M_1$, która akceptuje $\Sigma^*$. Np. $M_1$ natychmiast akceptuje każde wejście.
+    \item \textbf{Własność nie jest spełniona:} Istnieje MT $M_2$, która akceptuje język pusty $L(M_2)=\emptyset$. Ponieważ $\emptyset \neq \Sigma^*$, $L(M_2)$ nie posiada tej własności.
+\end{itemize}
+Własność jest nietrywialna. Z Twierdzenia Rice’a, $ALL_{TM}$ jest nierozstrzygalny.
+\\
+\textbf{Wniosek:} Ponieważ dla wszystkich podpunktów spełnione są oba warunki nietrywialności, Twierdzenie Rice'a ma zastosowanie, a wszystkie te języki są nierozstrzygalne.
+
+\section{Zadanie 6}
+Niech $A_{\epsilon TM} = \{\langle M \rangle \mid M \text{ jest maszyną Turinga, która akceptuje słowo } \epsilon\}$.
+
+Wykazujemy, że język $A_{\epsilon TM}$ jest nierozstrzygalny, przeprowadzając redukcję z problemu $A_{TM} = \{\langle M, w \rangle \mid M \text{ akceptuje } w\}$. Problem $A_{TM}$ jest znany jako nierozstrzygalny.
+
+\subsection*{Konstrukcja redukcji $A_{TM} \le_m A_{\epsilon TM}$}
+
+Skonstruujemy obliczalną funkcję $f$, która przekształca każde wejście $\langle M, w \rangle$ dla $A_{TM}$ w wejście $\langle T \rangle$ dla $A_{\epsilon TM}$ tak, że:
+$$
+\langle M, w \rangle \in A_{TM} \iff \langle T \rangle \in A_{\epsilon TM}
+$$
+
+Funkcja $f$ działa tak: na wejściu $\langle M, w \rangle$, $f$ konstruuje nową Maszynę Turinga $T$.
+
+Konstrukcja Maszyny $T$:
+
+Maszyna $T$ działa na dowolnym wejściu $x$ w następujący sposób:
+\begin{enumerate}
+    \item Sprawdzenie wejścia- jeżeli wejście $x$ nie jest słowem pustym ($\epsilon$), maszyna $T$ odrzuca.
+    \item Dla $\epsilon$- jeżeli wejście $x$ jest słowem pustym ($\epsilon$), maszyna $T$ ignoruje wejście i symuluje maszynę $M$ na słowie $w$.
+    \item Akceptacja - jeżeli symulacja $M$ na $w$ akceptuje, maszyna $T$ akceptuje. W przeciwnym razie $T$ zapętla się (lub odrzuca, jeśli $M$ odrzuca $w$).
+\end{enumerate}
+Formalnie $T$ akceptuje $x$ wtedy i tylko wtedy, gdy $x=\epsilon$ i $M$ akceptuje $w$.
+
+\subsection*{Uzasadnienie poprawności redukcji}
+
+Musimy sprawdzić równoważność: $\langle M, w \rangle \in A_{TM} \iff \langle T \rangle \in A_{\epsilon TM}$.
+
+\begin{enumerate}
+    \item przypadek $\implies$ - załóżmy, że $\langle M, w \rangle \in A_{TM}$ (tzn. $M$ akceptuje $w$).
+    \begin{itemize}
+        \item Ponieważ $M$ akceptuje $w$, zgodnie z krokiem 2 i 3 konstrukcji $T$, maszyna $T$ po wczytaniu $\epsilon$ uruchomi symulację, która się zakończy akceptacją.
+        \item Zatem $T$ akceptuje $\epsilon$, co oznacza $\langle T \rangle \in A_{\epsilon TM}$.
+    \end{itemize}
+
+    \item przypadek $\impliedby$ - załóżmy, że $\langle T \rangle \in A_{\epsilon TM}$ (tzn. $T$ akceptuje $\epsilon$).
+    \begin{itemize}
+        \item Aby $T$ zaakceptowała $\epsilon$, musiała przejść przez krok 2 (symulacja $M$ na $w$) i ta symulacja musiała się zakończyć akceptacją (krok 3).
+        \item Skoro $M$ akceptuje $w$, to $\langle M, w \rangle \in A_{TM}$.
+    \end{itemize}
+\end{enumerate}
+
+\subsection*{Wniosek}
+
+
+
+Skoro skonstruowaliśmy redukcję z nierozstrzygalnego języka $A_{TM}$ do języka $A_{\epsilon TM}$, i redukcja ta jest funkcją obliczalną (maszyna $T$ jest konstruowana w skończonym czasie), to $A_{\epsilon TM}$ jest również nierozstrzygalny.
+
+Gdyby $A_{\epsilon TM}$ był rozstrzygalny przez maszynę $R$, moglibyśmy użyć $R$ do rozstrzygnięcia $A_{TM}$:
+$$
+S(\langle M, w \rangle) = R(f(\langle M, w \rangle))
+$$
+co prowadzi do sprzeczności.
+
+
+\section{Zadanie 7}
+Definicja problemu\\
+Rozważmy język $W_{\mathrm{BLANK}}$ (Write Blank - Zapis Pustego Symbolu) złożony z kodowań maszyn Turinga, które w trakcie obliczeń dla dowolnego słowa wejściowego zamieniają niepusty symbol na pusty.
+
+Niech $\Sigma$ będzie alfabetem wejściowym, a $\Gamma$ alfabetem taśmowym, przy czym $\sqcup \in \Gamma$ jest symbolem pustym (blank).
+
+\[
+W_{\mathrm{BLANK}} = \{\langle M \rangle \mid M \text{ jest jednotaśmową MT, która działając na pewnym wejściu }\]
+\[
+w \in \Sigma* \text{ i na pewnym kroku, zapisuje symbol } \sqcup \text{ w miejscu, gdzie wcześniej znajdował} \]
+\[
+\text{się symbol  x} \in \Gamma \setminus \{\sqcup\}\}
+\]
+
+\subsection*{Dowód nierozstrzygalności $W_{\mathrm{BLANK}}$}
+
+Wykazujemy, że język $W_{\mathrm{BLANK}}$ jest nierozstrzygalny, przeprowadzając redukcję z problemu $A_{TM} = \{\langle M, w \rangle \mid M \text{ akceptuje } w\}$, który jest znany jako nierozstrzygalny.
+
+\subsection*{Konstrukcja redukcji $A_{TM} \le_m W_{\mathrm{BLANK}}$}
+
+Skonstruujemy funkcję obliczalną $f$, która przekształca wejście $\langle M, w \rangle$ dla $A_{TM}$ w wejście $\langle T \rangle$ dla $W_{\mathrm{BLANK}}$ tak, że:
+$$
+\langle M, w \rangle \in A_{TM} \iff \langle T \rangle \in W_{\mathrm{BLANK}}
+$$
+
+Funkcja $f$ konstruuje nową Maszynę Turinga $T$, która działa w następujący sposób:
+
+Konstrukcja Maszyny $T$:
+
+Maszyna $T$ działa na dowolnym wejściu $x \in \Sigma^*$ w następujący sposób:
+\begin{enumerate}
+    \item Przygotowanie taśmy - $T$ na początku przechodzi przez całe wejście $x$ i zamienia każdy symbol $x_i$ na specjalny symbol $x'_i$, który nie jest pusty ($\sqcup$) i który jest oznaczony jako niemożliwy do wymazania (np. $x_i$ zamieniamy na $\tilde{x}_i \in \Gamma \setminus \{\sqcup\}$).
+    \item Symulacja - maszyna $T$ ignoruje wejście $x$ (które jest już na taśmie w postaci $\tilde{x}$), a następnie symuluje maszynę $M$ na słowie $w$. Symulacja odbywa się na wolnym obszarze taśmy (za słowem $\tilde{x}$).
+    \item blokada zapisu pustego symbolu (klucz) -  maszyna $T$ jest tak zaprojektowana, aby w trakcie symulacji $M$ na $w$, $T$ nigdy nie zapisywała symbolu $\sqcup$ w miejscu, gdzie wcześniej znajdował się symbol niepusty. Jeśli symulacja wymagałaby wymazania symbolu, $T$ zapisuje w to miejsce nowy symbol specjalny, np. $\natural \in \Gamma \setminus \{\sqcup\}$.
+    \item decyzja akceptacji - jeżeli symulacja $M$ na $w$ akceptuje, maszyna $T$ przesuwa się na początek taśmy i wymazuje pierwszy symbol wejścia (tj. zapisuje $\sqcup$ w miejscu, gdzie znajdował się $\tilde{x}_1 \in \Gamma \setminus \{\sqcup\}$). Następnie $T$ akceptuje.
+    \item odrzucenie/zapętlenie - jeżeli symulacja $M$ na $w$ odrzuca lub się zapętla, maszyna $T$ również odrzuca lub zapętla się, nigdy nie dokonując operacji wymazania.
+\end{enumerate}
+
+\subsection*{Uzasadnienie poprawności redukcji}
+
+Musimy sprawdzić równoważność: $\langle M, w \rangle \in A_{TM} \iff \langle T \rangle \in W_{\mathrm{BLANK}}$.
+
+\begin{enumerate}
+    \item Przypadek $\implies$ - załóżmy, że $M$ akceptuje $w$.
+    \begin{itemize}
+        \item Maszyna $T$ dla dowolnego wejścia $x$ przeprowadzi symulację $M$ na $w$.
+        \item Symulacja zakończy się akceptacją, co uruchomi krok 4, w którym $T$ zapisze $\sqcup$ w miejscu $\tilde{x}_1$, gdzie wcześniej był symbol niepusty.
+        \item Zatem $\langle T \rangle \in W_{\mathrm{BLANK}}$.
+    \end{itemize}
+
+    \item Przypadek $\impliedby$ - załóżmy, że $\langle T \rangle \in W_{\mathrm{BLANK}}$ (tzn. $T$ zapisuje $\sqcup$ w miejscu symbolu niepustego dla pewnego wejścia $x$).
+    \begin{itemize}
+        \item Zgodnie z konstrukcją $T$ (kroki 1, 3, 5), jedynym momentem, w którym $T$ zapisuje $\sqcup$ w miejscu symbolu niepustego, jest krok 4.
+        \item Krok 4 jest wykonywany wyłącznie, gdy symulacja $M$ na $w$ zakończy się akceptacją.
+        \item Zatem $M$ akceptuje $w$, co oznacza $\langle M, w \rangle \in A_{TM}$.
+    \end{itemize}
+\end{enumerate}
+
+
+
+\subsection*{Wniosek}
+
+Ponieważ skonstruowaliśmy redukcję z nierozstrzygalnego języka $A_{TM}$ do $W_{\mathrm{BLANK}}$, dowodzi to, że $W_{\mathrm{BLANK}}$ jest nierozstrzygalny. Gdyby $W_{\mathrm{BLANK}}$ był rozstrzygalny, to $A_{TM}$ również musiałby być rozstrzygalny, co prowadzi do sprzeczności.
+
+\section{Zadanie 8}
+
+Stan $q$ maszyny Turinga $M$ jest bezużyteczny, jeśli dla żadnego słowa wejściowego $w$ maszyna $M$ nie przechodzi do stanu $q$ w trakcie swoich obliczeń.
+\\
+Rozważmy język $USELESS_{TM}$ złożony z kodowań maszyn Turinga, które posiadają co najmniej jeden stan bezużyteczny.
+\[
+USELESS_{TM} = \{\langle M \rangle \mid M \text{ jest MT i posiada co najmniej jeden stan bezużyteczny}\}.
+\]
+
+\subsection*{Dowód nierozstrzygalności $USELESS_{TM}$}
+
+Wykazujemy, że język $USELESS_{TM}$ jest nierozstrzygalny, przeprowadzając redukcję z problemu $E_{TM} = \{\langle M \rangle \mid L(M) = \emptyset\}$, który jest znany jako nierozstrzygalny.
+
+\subsection*{Konstrukcja redukcji $E_{TM} \le_m USELESS_{TM}$}
+
+Skonstruujemy funkcję obliczalną $f$, która przekształca wejście $\langle M \rangle$ dla $E_{TM}$ w wejście $\langle T \rangle$ dla $USELESS_{TM}$ tak, że:
+$$
+\langle M \rangle \in E_{TM} \iff \langle T \rangle \in USELESS_{TM}
+$$
+
+Funkcja $f$ konstruuje nową Maszynę Turinga $T$ na podstawie maszyny $M$.
+
+\subsection*{Konstrukcja nowej maszyny $T$}
+
+Maszyna $T$ jest tworzona przez dodanie do maszyny $M$ jednego nowego, specjalnego stanu $q_{\mathrm{extra}}$, który jest stanem nieakceptującym i nierozpoczęcia. Maszyna $T$ ma ten sam język wejściowy i alfabet taśmowy co $M$.
+Zasady przejścia maszyny $T$:
+\begin{enumerate}
+    \item $T$ zachowuje wszystkie reguły przejścia maszyny $M$.
+    \item Dodajemy nowy, nieużywany stan $q_{\mathrm{extra}}$.
+    \item Nie dodajemy żadnych reguł przejścia, które prowadziłyby do stanu $q_{\mathrm{extra}}$, ani nie wychodzą z tego stanu (z wyjątkiem ewentualnej reguły tożsamości $q_{\mathrm{extra}}, x \to q_{\mathrm{extra}}, x, S$, jeśli stan ma być w ogóle użyteczny, ale tutaj celowo robimy go niedostępnym).
+\end{enumerate}
+
+Maszyna $T$ działa na wejściu $x$:
+\begin{enumerate}
+    \item $T$ zaczyna w stanie początkowym $q_0$ i symuluje $M$ na wejściu $x$.
+    \item Maszyna $T$ ma zbiór stanów $Q_T = Q_M \cup \{q_{\mathrm{extra}}\}$.
+\end{enumerate}
+Z definicji maszyny $T$, jedynym sposobem, aby $q_{\mathrm{extra}}$ został odwiedzony, byłoby istnienie reguły przejścia $\delta_M(q, x) = (q_{\mathrm{extra}}, y, d)$ lub $\delta_T(q, x) = (q_{\mathrm{extra}}, y, d)$. Ponieważ celowo nie dodajemy żadnych takich reguł, dostęp do $q_{\mathrm{extra}}$ jest możliwy tylko wtedy, gdy stan początkowy $q_0$ jest równy $q_{\mathrm{extra}}$, co zakładamy, że nie ma miejsca.
+
+Aby uzyskać poprawną redukcję, musimy zapewnić, że $M$ ma przynajmniej jeden stan dostępny. Zakładamy, że $M$ jest poprawną MT.
+
+Rozważmy ulepszoną konstrukcję $T$:
+
+Konstrukcja $T$ (ulepszona):
+$T$ ma zbiór stanów $Q_T = Q_M \cup \{q_{\mathrm{extra}}\}$.
+\begin{enumerate}
+    \item $T$ zachowuje wszystkie reguły przejścia z $M$.
+    \item $T$ jest maszyną $M$, do której dodaliśmy nowy, niedostępny stan $q_{\mathrm{extra}}$.
+\end{enumerate}
+
+\subsection*{Uzasadnienie poprawności redukcji}
+
+Musimy sprawdzić równoważność: $\langle M \rangle \in E_{TM} \iff \langle T \rangle \in USELESS_{TM}$.
+
+\begin{enumerate}
+    \item Przypadek $\implies$ - załóżmy, że $\langle M \rangle \in E_{TM}$ (tzn. $L(M) = \emptyset$).
+    \begin{itemize}
+        \item Ponieważ $L(M) = \emptyset$, maszyna $M$ nigdy nie akceptuje żadnego słowa wejściowego.
+        \item Skonstruujmy $T$ tak, że $q_{\mathrm{extra}}$ jest stanem, do którego można przejść tylko po akceptacji przez $M$.
+        \item W tym celu zmieniamy maszynę $T$ tak, aby $q_{\mathrm{accept}}$ maszyny $M$ przekierowywał do $q_{\mathrm{extra}}$.
+
+        Korekta konstrukcji $T$ (klucz redukcji):
+        $T$ zachowuje wszystkie reguły przejścia z $M$, ale usuwa stan akceptujący $q_{\mathrm{accept}} \in Q_M$. Zamiast niego, każda reguła $\delta_M(q, x) = (q_{\mathrm{accept}}, y, d)$ jest zastąpiona przez $\delta_T(q, x) = (q_{\mathrm{extra}}, y, d)$. Stan $q_{\mathrm{extra}}$ staje się nowym stanem akceptującym $T$. Dodatkowo $T$ ma drugi, nowy stan $q_{\mathrm{useless}}$, który jest niedostępny z żadnego innego stanu.
+
+        \item W maszynie $T$:
+            * Stany z $M$ są użyteczne $\iff M$ na jakimś wejściu dotrze do tego stanu.
+            * Stan $q_{\mathrm{useless}}$ jest bezużyteczny $\iff$ Nie ma reguły prowadzącej do $q_{\mathrm{useless}}$.
+
+        \item Skupmy się na prostszej konstrukcji: $T$ ma dwa nowe stany $q_{\mathrm{accept}}$ (stan akceptujący $T$) i $q_{\mathrm{useless}}$. Nie ma reguł prowadzących do $q_{\mathrm{useless}}$.
+
+        \item Jeśli $L(M) = \emptyset$, to $M$ nigdy nie wejdzie do swojego stanu akceptującego. W nowej konstrukcji $T$ robimy redukcję do $E_{TM}$ tak, aby $q_{\mathrm{useless}}$ był dostępny tylko, gdy $L(M) \neq \emptyset$. To jest trudne, bo redukujemy z $E_{TM}$.
+
+        Wracając do Redukcji $E_{TM} \le_m USELESS_{TM}$ (właściwa wskazówka):
+
+        Niech $T$ ma stany $Q_T = Q_M \cup \{q_{\mathrm{extra}}\}$, gdzie $q_{\mathrm{extra}}$ jest nowym, niedostępnym stanem.
+        Jeżeli $L(M) = \emptyset$, oznacza to, że $M$ (a zatem i $T$) nigdy nie wejdzie do stanu $q_{\mathrm{accept}}$. Wszystkie stany z $M$ są nadal użyteczne, o ile $M$ się na nich w ogóle zaczyna i wykonuje jakieś obliczenia.
+
+        Konstrukcja $T$ (poprawne powiązanie):
+        Dodajemy nowy stan $q_{\mathrm{useless}}$ oraz $q_{\mathrm{trigger}}$.
+        1. $T$ symuluje $M$ na $x$.
+        2. Jeżeli $M$ akceptuje, $T$ przechodzi do $q_{\mathrm{trigger}}$.
+        3. Ze stanu $q_{\mathrm{trigger}}$, $T$ przechodzi do wszystkich stanów $q \in Q_M$ oraz \textbf{do $q_{\mathrm{useless}}$}.
+        4. Jeżeli $M$ nie akceptuje, $T$ nigdzie nie przechodzi.
+
+        *uprawomocnienie (najprostsza forma):
+        $T$ ma stan $q_{\mathrm{useless}}$, który jest osiągalny \textbf{tylko} ze stanu akceptującego $M$.
+
+        $T$ ma stany $Q_T = Q_M \cup \{q_{\mathrm{extra}}, q_{\mathrm{useless}}\}$.
+        \begin{enumerate}
+            \item Reguły $M$ są zachowane.
+            \item Nowy stan $q_{\mathrm{extra}}$ jest stanem, do którego przechodzi $T$ po akceptacji $M$: $\delta_T(q, x) = (q_{\mathrm{extra}}, y, d)$, jeśli $\delta_M(q, x) = (q_{\mathrm{accept}}, y, d)$.
+            \item Z $q_{\mathrm{extra}}$ jest reguła prowadząca TYLKO do $q_{\mathrm{useless}}$.
+            \item $q_{\mathrm{useless}}$ jest stanem akceptującym $T$.
+        \end{enumerate}
+
+        \item W tym przypadku $L(M) = \emptyset$. $M$ nigdy nie akceptuje. $T$ nigdy nie przechodzi do $q_{\mathrm{extra}}$, a co za tym idzie,$q_{\mathrm{useless}}$ jest stanem bezużytecznym. Zatem $\langle T \rangle \in USELESS_{TM}$.
+    \end{itemize}
+
+    \item Przypadek $\impliedby$ - załóżmy, że $\langle T \rangle \in USELESS_{TM}$ (tzn. $T$ ma stan bezużyteczny $q_{\mathrm{bezużyteczny}}$).
+    \begin{itemize}
+        \item Jedynym stanem, który może być bezużyteczny, jest $q_{\mathrm{useless}}$, ponieważ wszystkie stany z $Q_M$ są stanami startowymi i są używane w symulacji, jeśli $M$ wykonuje jakikolwiek ruch.
+        \item Jeżeli $q_{\mathrm{useless}}$ jest bezużyteczny, to nigdy nie został osiągnięty.
+        \item Osiągnięcie $q_{\mathrm{useless}}$ wymaga przejścia przez $q_{\mathrm{extra}}$, co z kolei wymagało, aby $M$ akceptowała jakieś słowo $w$.
+        \item Skoro $q_{\mathrm{useless}}$ nie został osiągnięty, to $M$ nigdy nie akceptuje żadnego słowa
+        \item Zatem $L(M) = \emptyset$, co oznacza $\langle M \rangle \in E_{TM}$.
+    \end{itemize}
+\end{enumerate}
+
+
+\subsection*{Wniosek}
+
+Jesli skonstruowaliśmy redukcję z nierozstrzygalnego języka $E_{TM}$ do $USELESS_{TM}$, to $USELESS_{TM}$ jest również nierozstrzygalny.
+
+\end{document}
