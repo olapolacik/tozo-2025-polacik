@@ -1,0 +1,170 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+\title{Teoria obliczeń i złożoność obliczeniowa 2025 - lista 12}
+\author{Aleksandra Połacik}
+\date{October 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+Dwie liczby są względnie pierwsze, gdy ich $NWD = 1$.
+\begin{itemize}
+    \item[(a)] $10505 = 8 \cdot 1274 + 313 \rightarrow 1274 = 4 \cdot 313 + 22 \rightarrow 313 = 14 \cdot 22 + 5 \rightarrow 22 = 4 \cdot 5 + 2 \rightarrow 5 = 2 \cdot 2 + 1$. \\
+    $NWD(1274, 10505) = 1$. \textbf{Są względnie pierwsze.}
+    \item[(b)] $8029 = 1 \cdot 7289 + 740 \rightarrow 7289 = 9 \cdot 740 + 629 \rightarrow 740 = 1 \cdot 629 + 111 \rightarrow 629 = 5 \cdot 111 + 74 \rightarrow 111 = 1 \cdot 74 + 37 \rightarrow 74 = 2 \cdot 37 + 0$. \\
+    $NWD(7289, 8029) = 37$. \textbf{Nie są względnie pierwsze.}
+\end{itemize}
+
+\section{Zadanie 2}
+
+\textbf{Gramatyka:} \\
+$S \to RT$ \\
+$R \to TR \mid a$ \\
+$T \to TR \mid b$
+
+\subsection*{Krok 1: Długość $i=1$ (Podstawienie terminali)}
+Sprawdzamy, który nieterminał generuje daną literę:
+\begin{itemize}
+    \item $w_1 = b \implies V_{1,1} = \{T\}$ (bo $T \to b$)
+    \item $w_2 = a \implies V_{1,2} = \{R\}$ (bo $R \to a$)
+    \item $w_3 = b \implies V_{1,3} = \{T\}$
+    \item $w_4 = a \implies V_{1,4} = \{R\}$
+\end{itemize}
+
+\subsection*{Krok 2: Długość $i=2$ (Pary liter)}
+Szukamy produkcji postaci $A \to BC$, gdzie $B \in V_{1,j}$ oraz $C \in V_{1,j+1}$:
+\begin{itemize}
+    \item $V_{2,1} (ba): V_{1,1}V_{1,2} = \{T\}\{R\}$. Szukamy reguł z prawą stroną $TR$. Są to $R \to TR$ oraz $T \to TR$. \\ \textbf{Wynik:} $\{R, T\}$
+    \item $V_{2,2} (ab): V_{1,2}V_{1,3} = \{R\}\{T\}$. Szukamy reguł z prawą stroną $RT$. Jest to $S \to RT$. \\ \textbf{Wynik:} $\{S\}$
+    \item $V_{2,3} (ba): V_{1,3}V_{1,4} = \{T\}\{R\}$. Analogicznie jak w $V_{2,1}$. \\ \textbf{Wynik:} $\{R, T\}$
+\end{itemize}
+
+\subsection*{Krok 3: Długość $i=3$ (Trójki liter)}
+Dzielimy fragmenty na (1+2) lub (2+1) litery:
+\begin{itemize}
+    \item $V_{3,1} (bab): (V_{1,1}V_{2,2}) \cup (V_{2,1}V_{1,3}) = (\{T\}\{S\}) \cup (\{R, T\}\{T\})$. Brak pasujących reguł w gramatyce. \\ \textbf{Wynik:} $\emptyset$
+    \item $V_{3,2} (aba): (V_{1,2}V_{2,3}) \cup (V_{2,2}V_{1,4}) = (\{R\}\{R, T\}) \cup (\{S\}\{R\})$. \\
+    Dla $\{R\}\{T\}$ mamy $S \to RT$. Pozostałe ($RR, SR$) nie występują. \\ \textbf{Wynik:} $\{S\}$
+\end{itemize}
+
+\subsection*{Krok 4: Długość $i=4$ (Całe słowo $baba$)}
+Możliwe podziały: (1+3), (2+2), (3+1):
+\begin{itemize}
+    \item $V_{4,1}: (V_{1,1}V_{3,2}) \cup (V_{2,1}V_{2,2}) \cup (V_{3,1}V_{1,4})$
+    \item $(\{T\}\{S\}) \cup (\{R, T\}\{S\}) \cup (\emptyset\{R\})$
+    \item Analiza: $\{TS, RS\}$. Żadna reguła nie ma takiej prawej strony.
+    \item \textit{Korekta analizy połączeń:} Sprawdzamy wszystkie kombinacje $V_{i,j}$. Dla $V_{2,1}(ba)$ i $V_{2,3}(ba)$ mamy $\{R, T\}\{R, T\}$, co daje $RT \to S$ oraz $TR \to R, T$.
+    \item \textbf{Wynik końcowy:} $\{S, R, T\}$
+\end{itemize}
+
+\section{Zadanie 3}
+
+Niech $L_A, L_B \in \text{P}$. Z definicji klasy P istnieją deterministyczne maszyny Turinga $M_A$ i $M_B$, które rozstrzygają te języki w czasie odpowiednio $O(n^k)$ i $O(n^m)$ dla pewnych stałych $k, m \geq 1$.
+
+\subsection*{(a) Suma: $A \cup B \in \text{P}$}
+
+Konstruujemy maszynę $M_{A \cup B}$, która dla wejścia $x$ o długości $n$:
+\begin{enumerate}
+    \item Uruchamia $M_A(x)$. Jeśli $M_A$ zaakceptuje, $M_{A \cup B}$ \textbf{akceptuje}.
+    \item Jeśli $M_A$ odrzuci, uruchamia $M_B(x)$. Jeśli $M_B$ zaakceptuje, $M_{A \cup B}$ \textbf{akceptuje}.
+    \item W przeciwnym razie \textbf{odrzuca}.
+\end{enumerate}
+Całkowity czas działania to $T(n) = O(n^k) + O(n^m) = O(n^{\max(k,m)})$, co jest funkcją wielomianową. Zatem $A \cup B \in \text{P}$.
+
+
+\subsection*{(b) Konkatenacja: $A \circ B \in \text{P}$}
+
+Konstruujemy maszynę $M_{A \circ B}$, która dla wejścia $x$ o długości $n$:
+\begin{enumerate}
+    \item Dla każdego możliwego podziału słowa $x$ na dwie części $y$ i $z$ (takich, że $x = yz$):
+    \begin{itemize}
+        \item Uruchom $M_A(y)$ oraz $M_B(z)$.
+        \item Jeśli obie maszyny zaakceptują, $M_{A \circ B}$ \textbf{akceptuje} i kończy pracę.
+    \end{itemize}
+    \item Jeśli żaden podział nie został zaakceptowany, \textbf{odrzuca}.
+\end{enumerate}
+Liczba możliwych podziałów wynosi $n+1$. W każdej iteracji wykonujemy pracę o złożoności wielomianowej. Całkowity czas wynosi $T(n) = O(n \cdot (n^k + n^m)) = O(n^{\max(k,m)+1})$, co jest wielomianem. Zatem $A \circ B \in \text{P}$.
+
+
+\subsection*{(c) Dopełnienie: $\overline{A} \in \text{P}$}
+
+Konstruujemy maszynę $M_{\overline{A}}$, która dla wejścia $x$:
+\begin{enumerate}
+    \item Uruchamia $M_A(x)$.
+    \item Jeśli $M_A$ zaakceptuje, $M_{\overline{A}}$ \textbf{odrzuca}.
+    \item Jeśli $M_A$ odrzuci, $M_{\overline{A}}$ \textbf{akceptuje}.
+\end{enumerate}
+Złożoność czasowa jest identyczna jak dla $M_A$, czyli $O(n^k)$. Ponieważ czas wielomianowy zostaje zachowany, $\overline{A} \in \text{P}$.
+
+
+\section{Zadanie 4}
+Niech $A$ będzie językiem rozstrzygalnym przez deterministyczną Maszynę Turinga $M_A$ w czasie $O(n^k)$. Aby wykazać, że $A^* \in \text{P}$, skonstruujemy algorytm oparty na programowaniu dynamicznym, który rozstrzyga, czy słowo $w = w_1w_2\dots w_n$ należy do $A^*$.
+
+\subsection*{1. Definicja tablicy i relacji rekurencyjnej}
+Definiujemy tablicę logiczną $T$ o rozmiarze $n \times n$, gdzie wartość $T[i,j]$ (dla $1 \le i \le j \le n$) określa, czy podsłowo $w_{i \dots j} = w_i w_{i+1} \dots w_j$ należy do języka $A^*$.
+
+Relacja rekurencyjna dla $T[i,j]$ wygląda następująco:
+\[
+T[i,j] =
+\begin{cases}
+1 & \text{jeżeli } w_{i \dots j} \in A \\
+1 & \text{jeżeli } \exists k \in \{i, \dots, j-1\} : (T[i,k] = 1 \land T[k+1,j] = 1) \\
+0 & \text{w przeciwnym razie}
+\end{cases}
+\]
+
+\subsection*{2. Opis algorytmu}
+Algorytm wypełnia tablicę $T$ iteracyjnie, zaczynając od podsłów o długości 1, aż do długości $n$:
+\begin{enumerate}
+    \item Dla każdej długości $len$ od $1$ do $n$:
+    \item Dla każdego indeksu startowego $i$ od $1$ do $n - len + 1$:
+    \item Wyznacz indeks końcowy $j = i + len - 1$.
+    \item Sprawdź, czy $w_{i \dots j} \in A$ (używając maszyny $M_A$). Jeśli tak, ustaw $T[i,j] = 1$.
+    \item Jeśli nie, sprawdź wszystkie możliwe punkty podziału $k$ między $i$ a $j-1$. Jeśli dla któregokolwiek $k$ zachodzi $T[i,k] = 1$ oraz $T[k+1,j] = 1$, ustaw $T[i,j] = 1$.
+\end{enumerate}
+Słowo $w$ należy do $A^*$ wtedy i tylko wtedy, gdy $T[1,n] = 1$.
+
+\subsection*{3. Analiza złożoności obliczeniowej}
+\begin{itemize}
+    \item \textbf{Liczba stanów:} Tablica ma $O(n^2)$ komórek.
+    \item \textbf{Koszt wypełnienia komórki:} Dla każdej komórki wykonujemy:
+    \begin{itemize}
+        \item Jedno wywołanie $M_A$ działającej w czasie $O(n^k)$.
+        \item Maksymalnie $n$ sprawdzeń istniejących już wartości w tablicy ($O(n)$).
+    \end{itemize}
+    \item \textbf{Złożoność całkowita:} $O(n^2 \cdot (n^k + n)) = O(n^{k+2} + n^3)$.
+\end{itemize}
+Ponieważ $k$ jest stałą, otrzymany czas działania jest wielomianem względem $n$. Zatem $A^* \in \text{P}$.
+
+\section{Zadanie 5}
+
+Algorytm sprawdzania spójności grafu $G = (V, E)$ o $|V|=n$ wierzchołkach:
+\begin{enumerate}
+    \item Wybierz dowolny wierzchołek $v \in V$ i zaznacz go.
+    \item Powtarzaj aż nie można zaznaczyć nowych wierzchołków:
+    \begin{itemize}
+        \item Dla każdej krawędzi $(u, z) \in E$, jeśli $u$ jest zaznaczony, zaznacz $z$.
+    \end{itemize}
+    \item Jeśli wszystkie wierzchołki w $V$ są zaznaczone, \textbf{akceptuj}; w przeciwnym razie \textbf{odrzuć}.
+\end{enumerate}
+Złożoność: Pętla wykonuje się maksymalnie $n$ razy. Wewnątrz przeglądamy krawędzie $O(n^2)$. Całość działa w $O(n^3)$, co dowodzi przynależności do klasy P.
+
+
+\section{Zadanie 6}
+
+Język $ALL_{DFA} = \{ \langle M \rangle \mid M \text{ jest DFA i } L(M) = \Sigma^* \}$.
+Problem ten jest równoważny sprawdzeniu, czy dopełnienie języka $M$ jest puste: $L(M) = \Sigma^* \iff \overline{L(M)} = \emptyset$.
+\begin{enumerate}
+    \item Skonstruuj automat $M'$ rozpoznający $\overline{L(M)}$ poprzez zamianę stanów akceptujących z nieakceptującymi w $M$. Jest to operacja w czasie $O(n)$.
+    \item Sprawdź, czy $L(M') = \emptyset$ (problem pustości DFA). Można to zrobić sprawdzając osiągalność dowolnego stanu akceptującego ze stanu startowego (np. algorytmem BFS/DFS).
+\end{enumerate}
+Ponieważ osiągalność w grafie (DFS/BFS) zajmuje czas wielomianowy $O(V+E)$, język $ALL_{DFA}$ należy do klasy P.
+
+\end{document}
