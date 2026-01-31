@@ -1,0 +1,84 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{Teoria obliczeń i złożoność obliczeniowa - Lista 14}
+\author{Aleksandra Połacik}
+\date{Październik 2025}
+
+\begin{document}
+
+\maketitle
+
+\section{Zadanie 1}
+Formuła $\phi$ zawiera wszystkie możliwe kombinacje literali dla dwóch zmiennych $x, y$.
+Dla dowolnego wartościowania $(x, y) \in \{0, 1\}^2$, dokładnie jedna z klauzul będzie fałszywa:
+\begin{itemize}
+    \item $(0,0) \implies (x \lor y) = 0$
+    \item $(0,1) \implies (x \lor \bar{y}) = 0$
+    \item $(1,0) \implies (\bar{x} \lor y) = 0$
+    \item $(1,1) \implies (\bar{x} \lor \bar{y}) = 0$
+\end{itemize}
+Oznacza to że formuła jest \textbf{niespełnialna}.
+
+
+\section{Zadanie 2}
+Niech A, B, C $\subseteq$ $\Sigma$*, dowolnie ustalone \{zał.\}\\
+\begin{enumerate}
+    \item A $\leq_p$ B \{zał.\}
+    \item B $\leq_p$ C \{zał.\}
+    \item Istnieje wielomianowo obliczalna funkcja f: $\Sigma$* $\longrightarrow$ $\Sigma$* taka, że dla każdego w $\in$ $\Sigma$* w $\in$ A $\iff$ f(w) $\in$ B \{1, def $\leq_p$\}
+    \item Istnieje wielomianowo obliczalna   funkcja g: $\Sigma$* $\longrightarrow$ $\Sigma$ taka, że dla każdego w $\in$ $\Sigma$* w $\in$ B $\iff$ g(w) $\in$ C \{2, def $\leq_p$\}
+    \item definujemy funkcję h: $\Sigma$* $\longrightarrow$ $\Sigma$* w następujący sposób dla każdego w $\in$ $\Sigma$* h(w) = g(f(w)) \{def\}
+    \item Zauważmy, że w $\in$ A $\iff$ f(w) $\in$ B $\iff$ g(f(w)) $\in$ C $\iff$ h(w) $\in$ C \{3, 4\}
+    \item funkcja h jest obliczalna w czasie wielomianowym, ponieważ funkcje f i g są również obliczalne w czasie wielomianowym
+\end{enumerate}
+
+\section{Zadanie 3}
+Zgodnie z założeniami zadania istnieje ciąg znaków $w_{in} \in B$ oraz ciąg $w_{out} \notin B$. Chcemy pokazać, że $B$ jest NP-zupełny.
+
+Musimy wykazać, że $A \le_P B$.
+
+\begin{quote}
+„Dla wejścia $w$:
+\begin{enumerate}
+    \item Uruchom $M_A$ (rozstrzygacz dla $A$) na wejściu $w$.
+    \item Jeśli $M_A$ zaakceptował, wypisz $w_{in}$.
+    \item Jeśli $M_A$ odrzucił, wypisz $w_{out}$.”
+\end{enumerate}
+\end{quote}
+
+Ponieważ $M_A$ działa w czasie wielomianowym, a wypisanie stałych ciągów $w_{in}$ lub $w_{out}$ zajmuje czas stały, cała funkcja $f$ jest obliczalna w czasie wielomianowym, co dowodzi, że $B$ jest NP-zupełny.
+
+\section{Zadanie 4}
+\begin{enumerate}
+    \item Załóżmy przeciwnie, że $P = NP$.
+    \item Zgodnie z udowodnionym wcześniej zadaniem, jeśli $P = NP$, to każdy język $B \in P \setminus \{\emptyset, \Sigma^*\}$ jest NP-zupełny.
+    \item Wiemy, że problem PATH (rozstrzyganie istnienia ścieżki w grafie) należy do klasy $P$ (można go rozwiązać np. algorytmem BFS).
+    \item Ponieważ PATH nie jest językiem pustym ($\emptyset$) ani językiem wszystkich słów ($\Sigma^*$), przy założeniu $P = NP$ musi on być NP-zupełny.
+    \item Otrzymujemy sprzeczność z założeniem tezy, że PATH \textbf{nie jest} NP-zupełny.
+    \item Zatem nasze założenie o równości klas musi być fałszywe, co oznacza, że $P \neq NP$.
+\end{enumerate}
+
+\section{Zadanie 5}
+\begin{enumerate}
+    \item DOUBLE-SAT $\in$ NP: Wystarczy niedeterministycznie odgadnąć dwa różne wartościowania dla wszystkich zmiennych i zweryfikować, czy w obu przypadkach każda klauzula jest spełniona.
+
+    \item Redukcja 3SAT do DOUBLE-SAT: Dla danej formuły $\psi$ w postaci 3-CNF, tworzymy nową funkcję boolowską $\psi'$ poprzez dodanie nowej klauzuli $(x \lor \neg x)$ do $\psi$, gdzie $x$ jest nową zmienną nieobecną w $\psi$. Następnie sprawdzamy, czy $\langle \psi' \rangle \in \text{DOUBLE-SAT}$.
+
+    \item Redukcja ta jest ewidentnie wykonalna w czasie wielomianowym.
+
+    \item Udowodnimy, że oryginalna formuła $\langle \psi \rangle \in \text{3SAT}$ wtedy i tylko wtedy, gdy nowa funkcja $\langle \psi' \rangle \in \text{DOUBLE-SAT}$.
+    \begin{itemize}
+        \item Jeśli oryginalna formuła $\psi$ jest niespełnialna, to nowa funkcja $\psi'$ również jest niespełnialna; tzn. $\langle \psi \rangle \notin \text{3SAT}$ implikuje $\langle \psi' \rangle \notin \text{DOUBLE-SAT}$.
+        \item Jeśli $\langle \psi \rangle \in \text{3SAT}$, to stosujemy to samo wartościowanie zmiennych, które spełniało $\psi$. Ponieważ klauzula $(x \lor \neg x)$ jest zawsze prawdziwa, zarówno $x = 0$, jak i $x = 1$ dają poprawne wartościowania dla $\psi'$. Zatem istnieją co najmniej dwa wartościowania spełniające rozszerzoną formułę $\psi'$, więc $\langle \psi' \rangle \in \text{DOUBLE-SAT}$.
+    \end{itemize}
+\end{enumerate}
+
+\end{document}

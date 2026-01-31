@@ -1,0 +1,108 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{Teoria obliczeń i złożoność obliczeniowa - Lista 15}
+\author{Aleksandra Połacik}
+
+\begin{document}
+
+\maketitle
+
+
+
+\section{Zadanie 1}
+
+\subsection*{a) Suma}
+Niech PSPACE będzie zbiorem problemów decyzyjnych rozwiązywalnych w wielomianowej pamięci. Musimy wykazać, że klasa PSPACE jest domknięta ze względu na operację sumy.
+
+Dla danych dwóch problemów decyzyjnych $A$ i $B$ należących do PSPACE, musimy wykazać, że ich suma $C$ (tzn. $C = A \cup B$) również należy do PSPACE.
+Niech $M_1$ i $M_2$ będą maszynami Turinga o wielomianowo ograniczonej pamięci, odpowiednio dla języków $A$ i $B$. Możemy skonstruować nową maszynę Turinga $M_3$ dla języka $C$ w następujący sposób:
+
+\begin{enumerate}
+    \item Dla wejścia $x$, zasymuluj działanie $M_1$ na $x$. Jeśli $M_1$ akceptuje, wtedy $M_3$ również akceptuje.
+    \item Jeśli $M_1$ nie akceptuje, zasymuluj działanie $M_2$ na $x$. Jeśli $M_2$ akceptuje, wtedy $M_3$ akceptuje.
+    \item Jeśli ani $M_1$, ani $M_2$ nie akceptują, wtedy $M_3$ odrzuca.
+\end{enumerate}
+
+Ponieważ $M_1$ i $M_2$ mają wielomianowo ograniczoną pamięć, symulowanie ich jedna po drugiej nie zwiększa złożoności pamięciowej powyżej wielomianu, zatem $M_3$ również używa pamięci wielomianowej. W konsekwencji ich suma $C$ należy do PSPACE.
+
+\subsection*{b) Dopełnienie}
+Musimy wykazać, że klasa PSPACE jest domknięta ze względu na operację dopełnienia.
+Dla danego problemu decyzyjnego $A$ w PSPACE, musimy wykazać, że jego dopełnienie $\overline{A}$ (tzn. $\overline{A} = \{x \mid x \notin A\}$) również należy do PSPACE.
+
+Niech $M_1$ będzie maszyną Turinga o wielomianowo ograniczonej pamięci dla języka $A$. Możemy skonstruować nową maszynę Turinga $M_2$ dla $\overline{A}$ w następujący sposób:
+
+\begin{enumerate}
+    \item Dla wejścia $x$, zasymuluj działanie $M_1$ na $x$.
+    \item Jeśli $M_1$ akceptuje $x$, wtedy $M_2$ odrzuca.
+    \item Jeśli $M_1$ odrzuca $x$, wtedy $M_2$ akceptuje.
+\end{enumerate}
+
+Ponieważ $M_1$ ma wielomianowo ograniczoną pamięć, symulowanie jej wewnątrz $M_2$ nie zwiększa złożoności pamięciowej powyżej wielomianu. Zatem dopełnienie $\overline{A}$ również należy do PSPACE.
+
+\subsection*{c) Gwiazdka }
+Musimy wykazać, że klasa PSPACE jest domknięta ze względu na operację gwiazdki Kleene'ego.
+Dla danego problemu decyzyjnego $A$ w PSPACE, musimy wykazać, że problem $A^*$ (tzn. $A^* = \{x_1 x_2 \dots x_n \mid x_i \in A \text{ dla wszystkich } i, n \ge 0\}$) również należy do PSPACE.
+
+Niech $M_1$ będzie maszyną Turinga o wielomianowo ograniczonej pamięci dla języka $A$. Możemy skonstruować nową maszynę Turinga $M_2$ dla $A^*$ w następujący sposób:
+
+\begin{enumerate}
+    \item Dla wejścia $x$, zainicjalizuj licznik na 0.
+    \item Dla każdego możliwego podziału $x$ na podsłowa $x_1, x_2, \dots, x_n$:
+    \begin{enumerate}
+        \item Zasymuluj $M_1$ dla każdego podsłowa jako wejścia. Jeśli $M_1$ zaakceptuje wszystkie podsłowa, wtedy $M_2$ akceptuje $x$ i zatrzymuje się.
+        \item Jeśli $M_1$ odrzuci którekolwiek podsłowo, zwiększ licznik i przejdź do sprawdzania następnego możliwego podziału.
+    \end{enumerate}
+    \item Jeśli wszystkie podziały zostały sprawdzone i $M_1$ nie zaakceptowała wszystkich podsłów dla żadnego z nich, wtedy $M_2$ odrzuca $x$.
+\end{enumerate}
+
+Ponieważ $M_1$ ma wielomianowo ograniczoną pamięć, symulowanie jej dla wielu podsłów $x$ nie zwiększa złożoności pamięciowej powyżej wielomianu. Złożoność pamięciowa $M_2$ jest zdominowana przez pamięć potrzebną do przechowywania informacji o podziale oraz symulacji $M_1$. Zatem problem $A^*$ również należy do PSPACE.
+
+\subsection*{Wniosek}
+Podsumowując, wykazano, że klasa PSPACE jest domknięta ze względu na operacje sumy, dopełnienia oraz gwiazdki.
+
+\section{Zadanie 2}
+Z definicji, język $L$ jest PSPACE-trudny, jeżeli dla każdego języka $A \in \text{PSPACE}$ zachodzi redukcja $A \le_P L$.
+\begin{enumerate}
+    \item Wiemy, że zachodzi inkluzja klas złożoności: $\text{NP} \subseteq \text{PSPACE}$. Każdy problem, który można rozwiązać niedeterministycznie w czasie wielomianowym, można również rozwiązać w pamięci wielomianowej.
+    \item Skoro każdy język $A \in \text{PSPACE}$ redukuje się do $L$, to w szczególności każdy język $A' \in \text{NP}$ również musi redukować się do $L$ (ponieważ $A'$ jest elementem zbioru PSPACE).
+    \item Warunek „każdy język z NP redukuje się do $L$” jest definicją NP-trudności.
+\end{enumerate}
+Zatem $L$ jest NP-trudny.
+
+\section{Zadanie 3}
+
+
+\textbf{Teza:} $NP \subseteq PSPACE$.
+
+\textbf{Dowód:}
+Niech $L$ będzie dowolnym językiem należącym do klasy $NP$. Z definicji klasy $NP$ wynika, że istnieje deterministyczna maszyna Turinga $V$ (weryfikator) oraz wielomian $p$, takie że:
+\[ x \in L \iff \exists c \in \Sigma^{p(|x|)} : V(x, c) \text{ akceptuje} \]
+gdzie $c$ jest certyfikatem (świadkiem) o długości wielomianowej względem długości wejścia $n = |x|$.
+
+Aby wykazać, że $L \in PSPACE$, musimy skonstruować deterministyczną maszynę Turinga $M$, która rozstrzyga $L$ w pamięci wielomianowej. Maszyna $M$ działa następująco:
+
+\begin{enumerate}
+    \item Dla danego wejścia $x$, maszyna $M$ kolejno generuje wszystkie możliwe certyfikaty $c$ o długości $p(|x|)$ w porządku leksykograficznym.
+    \item Dla każdego wygenerowanego certyfikatu $c$, $M$ symuluje działanie weryfikatora $V$ na parze $(x, c)$.
+    \item Jeśli dla któregokolwiek $c$ weryfikator $V$ zaakceptuje, $M$ kończy pracę i \textbf{akceptuje}.
+    \item Jeśli po sprawdzeniu wszystkich możliwych certyfikatów żaden nie został zaakceptowany, $M$ \textbf{odrzuca}.
+\end{enumerate}
+
+\textbf{Analiza pamięciowa:}
+\begin{itemize}
+    \item Przechowywanie aktualnie sprawdzanego certyfikatu $c$ zajmuje $p(n)$ miejsca (wielomianowo).
+    \item Symulacja weryfikatora $V$ (który działa w czasie wielomianowym) zajmuje co najwyżej wielomianową ilość pamięci, ponieważ $Space(t) \le Time(t)$.
+    \item Maszyna $M$ wielokrotnie wykorzystuje to samo miejsce w pamięci do sprawdzania kolejnych certyfikatów (nadpisuje poprzedni certyfikat nowym).
+\end{itemize}
+
+Ponieważ całkowita ilość użytej pamięci jest sumą wielomianów, maszyna $M$ jest maszyną wielomianowo ograniczoną pamięciowo. Zatem $L \in PSPACE$, co dowodzi, że $NP \subseteq PSPACE$.
+
+\end{document}

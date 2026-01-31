@@ -1,0 +1,71 @@
+\documentclass{article}
+\usepackage[utf8]{inputenc}
+\usepackage{polski}
+\usepackage[polish]{babel}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{geometry}
+
+\geometry{a4paper, margin=1in}
+
+\title{Teoria obliczeń i złożoność obliczeniowa - Lista 13}
+\author{Aleksandra Połacik}
+\date{Październik 2025}
+
+\begin{document}
+
+\maketitle
+
+
+\section{Zadanie 1}
+$O|V|^3 * O (|E|)$ \\
+$O(|V^3|*|E|)$
+
+\section{Zadanie 2}
+
+Każda determistyczna TM jest niedeterministyczna TM, a to oznacza że nasz język A Należy do P.
+1. Niech A należy do P: \\
+2. Z definicji A jest rozstrzygalny przez pewną deterministyczną TM M działającą w czasie wielomianowym. \\
+3. Ponieważ każda deterministyczna TM jest NTM to ozn. że język A jest rozstrzygalny przez niedeterministyczna maszyna turinga M dzialajca w czasie wielomianowym. \\
+
+\section{Zadanie 3}
+
+a. M1 - funkcja rozstrzygająca jezyk A, t`n. w należy do A:
+$M_1(w)*$ = "tak" gdyby w należy do A \\
+$M_1(w)*$ = "nie" gdy w nie należy do A  \\
+
+def M(w): \\
+    if $M_1(w)$ = "tak": \\
+        return "tak" \\
+    if $M_2(w)$ = "tak":   \\
+        return "tak" \\
+    return "nie"
+
+
+$M_1(w)$ działa w czasie $O(|w|^{k_1})$
+$M_2(w)$ działa w czasie $O(|w|^{k_2})$ gdzie k1 i k2 są stałymi \\
+
+Odpowiedź: $O\!\left(n^{\max(k_1, k_2)}\right)$ \\
+
+
+b. Maszyna niedeterministycznie dzieli słowo wejściowe $w$ na dwie części $w = xy$. Następnie sprawdza (niedeterministycznie w czasie wielomianowym), czy $x \in A$ oraz czy $y \in B$. Jeśli oba warunki są spełnione, akceptuje.
+
+a. M1 - funkcja rozstrzygająca jezyk A, t`n. w należy do A:
+$M_1(w)*$ = "tak" gdyby w należy do A \\
+$M_1(w)*$ = "nie" gdy w nie należy do A  \\
+
+Czyli musimy podzielić słowo na x i y prefix ma należeć do A i sufix do B
+
+np. abba , na 5 części mozna podzielic na n+1 sposobów zeby sprawdzić konkatenacje \\
+n+1 należy do O(n)
+
+Odpowiedź: $O\!\left(n*n^{\max(k_1, k_2)+1}\right)$ \\
+
+\section{Zadanie 4}
+Zamkniętość NP ze względu na operację gwiazdki ($A^*$)Dla słowa $w$, maszyna niedeterministycznie wybiera liczbę $k$ (liczbę fragmentów) oraz miejsca podziału słowa na $w = w_1 w_2 \dots w_k$17.
+
+Następnie dla każdego fragmentu $w_i$ maszyna niedeterministycznie sprawdza, czy $w_i \in A$1818.Ponieważ podziałów jest skończenie wiele, a sprawdzenie każdego fragmentu zajmuje czas wielomianowy, cała procedura mieści się w niedeterministycznym czasie wielomianowym.
+
+
+
+\end{document}
